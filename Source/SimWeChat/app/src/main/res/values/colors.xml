@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorPrimary">#f4ba16</color>
+    <color name="colorPrimaryDark">#efaa10</color>
+    <color name="colorAccent">#e69912</color>
+
+    <!-- Text Color -->
+    <color name="textViewColor">#393a3f</color>
+    <color name="editTextColor">#202020</color>
+    <color name="buttonTextColor1">#ffffff</color>
+    <color name="buttonTextColor2">#303136</color>
+    <color name="hintColor">#c0c0c0</color>
 </resources>
