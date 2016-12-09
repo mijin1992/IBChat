@@ -1,6 +1,7 @@
 package com.brasco.simwechat;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.support.annotation.NonNull;
@@ -117,6 +118,8 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void signUp() {
-
+        Intent intent = new Intent(LogInActivity.this, SignUpActivity.class);
+        startActivity(intent);
+        finish();
     }
 }
