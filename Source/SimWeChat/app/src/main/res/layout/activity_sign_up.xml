@@ -95,14 +95,17 @@
             android:textAlignment="textEnd"
             android:textColor="@color/textViewColor"
             android:textSize="14sp"/>
-        <TextView
+        <EditText
+            android:id="@+id/txt_dial_code"
             android:layout_width="70dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:text="1"
             android:textColor="@color/textViewColor"
-            android:textSize="14sp"/>
+            android:textSize="14sp"
+            android:background="@null"/>
         <EditText
+            android:id="@+id/txt_phone_number"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -110,6 +113,7 @@
             android:textColorHint="@color/hintColor"
             android:textColor="@color/textViewColor"
             android:textSize="14sp"
+            android:inputType="phone"
             android:background="@null"/>
     </LinearLayout>
     <include layout="@layout/horize_linear_divider"/>
@@ -126,12 +130,13 @@
             android:textSize="16sp"/>
         <EditText
             android:id="@+id/txt_input_password"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_gravity="center_vertical"
             android:textColor="@color/textViewColor"
             android:textSize="14sp"
+            android:inputType="textPassword"
             android:hint="Enter Password"
             android:textColorHint="@color/hintColor"
             android:background="@null"/>

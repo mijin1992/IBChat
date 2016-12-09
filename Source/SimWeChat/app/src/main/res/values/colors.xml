@@ -10,4 +10,8 @@
     <color name="buttonTextColor1">#ffffff</color>
     <color name="buttonTextColor2">#303136</color>
     <color name="hintColor">#c0c0c0</color>
+
+    <!-- Screen Color -->
+    <color name="chatBackground">#d0d0d0</color>
+    <color name="tabTextColor">#a2a2a2</color>
 </resources>

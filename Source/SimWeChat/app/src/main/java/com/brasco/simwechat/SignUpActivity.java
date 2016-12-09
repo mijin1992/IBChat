@@ -5,7 +5,12 @@ import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.ToggleButton;
 
 //import com.bumptech.glide.Glide;
 //import com.nguyenhoanglam.imagepicker.activity.ImagePicker;
@@ -19,12 +24,30 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     private static final int REQUEST_CODE_PICKER = 100;
     private ImageButton m_btnSelectAvatar = null;
 //    private ArrayList<Image> m_imgAvatarList = new ArrayList<>();
+    private EditText m_txtFullName = null;
+    private LinearLayout m_btnSelectCountry = null;
+    private EditText m_txtDialCode = null;
+    private EditText m_txtMobileNumber = null;
+    private EditText m_txtPassword = null;
+    private ToggleButton m_btnShowPassword = null;
+    private Button m_btnSignUp = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
         m_btnSelectAvatar = (ImageButton) findViewById(R.id.btn_select_avatar);
+        m_txtFullName = (EditText) findViewById(R.id.txt_full_name);
+        m_btnSelectCountry = (LinearLayout) findViewById(R.id.btn_select_country);
+        m_txtDialCode = (EditText) findViewById(R.id.txt_dial_code);
+        m_txtMobileNumber = (EditText) findViewById(R.id.txt_phone_number);
+        m_txtPassword = (EditText) findViewById(R.id.txt_input_password);
+        m_btnShowPassword = (ToggleButton) findViewById(R.id.btn_show_password);
+        m_btnSignUp = (Button) findViewById(R.id.button_sign_up);
+        m_btnSelectAvatar.setOnClickListener(this);
+        m_btnSelectCountry.setOnClickListener(this);
+        m_btnShowPassword.setOnClickListener(this);
+        m_btnSignUp.setOnClickListener(this);
     }
 
     @Override
@@ -45,6 +68,12 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         switch (view.getId()) {
             case R.id.btn_select_avatar:
                 showImageFileChooser();
+                break;
+            case R.id.btn_select_country:
+                break;
+            case R.id.btn_show_password:
+                break;
+            case R.id.button_sign_up:
                 break;
         }
     }

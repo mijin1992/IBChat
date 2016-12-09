@@ -111,7 +111,8 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void signIn() {
-
+        Intent intent = new Intent(LogInActivity.this, MainActivity.class);
+        startActivity(intent);
     }
 
     private void performForgotPassword() {
@@ -120,6 +121,5 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
     private void signUp() {
         Intent intent = new Intent(LogInActivity.this, SignUpActivity.class);
         startActivity(intent);
-        finish();
     }
 }
