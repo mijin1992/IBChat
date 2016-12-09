@@ -19,11 +19,13 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_weight="1"
+            android:padding="5dp"
             android:orientation="vertical">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:layout_gravity="bottom">
                 <TextView
                     android:id="@+id/lbl_full_name"
                     android:layout_width="100dp"
@@ -36,11 +38,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Ibrahima Bah"
-                    android:textColorHint="@color/hintColor"/>
+                    android:textColorHint="@color/hintColor"
+                    android:background="@null"/>
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
+                android:layout_marginTop="10dp"
                 android:background="@color/colorPrimary"/>
         </LinearLayout>
         <ImageButton
@@ -63,6 +67,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:layout_gravity="center_vertical"
             android:text="Country/Region"
             android:textColor="@color/textViewColor"
             android:textSize="16sp"
@@ -71,6 +76,7 @@
             android:id="@+id/txt_country"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             android:text="United States"
             android:textColor="@color/colorPrimary"
             android:textSize="16sp"
@@ -79,11 +85,12 @@
     <include layout="@layout/horize_linear_divider"/>
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="30dp"
         android:orientation="horizontal">
         <TextView
             android:layout_width="30dp"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             android:text="+"
             android:textAlignment="textEnd"
             android:textColor="@color/textViewColor"
@@ -91,16 +98,19 @@
         <TextView
             android:layout_width="70dp"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             android:text="1"
             android:textColor="@color/textViewColor"
             android:textSize="14sp"/>
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             android:hint="Mobile number"
             android:textColorHint="@color/hintColor"
             android:textColor="@color/textViewColor"
-            android:textSize="14sp"/>
+            android:textSize="14sp"
+            android:background="@null"/>
     </LinearLayout>
     <include layout="@layout/horize_linear_divider"/>
     <LinearLayout
@@ -110,6 +120,7 @@
         <TextView
             android:layout_width="100dp"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             android:text="Password"
             android:textColor="@color/textViewColor"
             android:textSize="16sp"/>
@@ -118,10 +129,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:layout_gravity="center_vertical"
             android:textColor="@color/textViewColor"
             android:textSize="14sp"
             android:hint="Enter Password"
-            android:textColorHint="@color/hintColor"/>
+            android:textColorHint="@color/hintColor"
+            android:background="@null"/>
         <ToggleButton
             android:id="@+id/btn_show_password"
             android:layout_width="30dp"
