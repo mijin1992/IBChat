@@ -12,6 +12,7 @@
     <color name="hintColor">#c0c0c0</color>
 
     <!-- Screen Color -->
-    <color name="chatBackground">#d0d0d0</color>
+    <color name="chatBackground">#ebebeb</color>
+    <color name="inputBackground">#fff</color>
     <color name="tabTextColor">#a2a2a2</color>
 </resources>

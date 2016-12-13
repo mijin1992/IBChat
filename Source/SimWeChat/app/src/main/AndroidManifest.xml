@@ -15,7 +15,9 @@
         android:largeHeap="true"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".LogInActivity">
+        <activity
+            android:name=".LogInActivity"
+            android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -24,9 +26,15 @@
         </activity>
         <activity
             android:name=".SignUpActivity"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="adjustPan" />
         <activity android:name=".MainActivity" />
-        <activity android:name=".ChatActivity"></activity>
+        <activity
+            android:name=".ChatActivity"
+            android:windowSoftInputMode="adjustPan" />
+        <activity android:name=".ProfileActivity" />
+        <activity android:name=".PostActivity" />
+        <activity android:name=".MomentActivity"></activity>
     </application>
 
 </manifest>

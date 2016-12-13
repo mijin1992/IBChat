@@ -1,11 +1,16 @@
 package com.brasco.simwechat.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
+import com.brasco.simwechat.LogInActivity;
+import com.brasco.simwechat.MainActivity;
+import com.brasco.simwechat.ProfileActivity;
 import com.brasco.simwechat.R;
 
 /**
@@ -16,6 +21,8 @@ import com.brasco.simwechat.R;
  * create an instance of this fragment.
  */
 public class ProfileFragment extends Fragment {
+
+    LinearLayout m_btnProfile = null;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -42,6 +49,15 @@ public class ProfileFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_profile, container, false);
+        View v = inflater.inflate(R.layout.fragment_profile, container, false);
+        m_btnProfile = (LinearLayout) v.findViewById(R.id.button_profile);
+        m_btnProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getContext(), ProfileActivity.class);
+                startActivity(intent);
+            }
+        });
+        return v;
     }
 }

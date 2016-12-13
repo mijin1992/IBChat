@@ -4,23 +4,59 @@
     android:id="@+id/activity_chat"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
     android:orientation="vertical"
     android:background="@color/chatBackground"
     tools:context="com.brasco.simwechat.ChatActivity">
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/list_chat_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1"/>
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:scrollbars="vertical"/>
     <LinearLayout
+        android:id="@+id/chat_input"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:orientation="horizontal">
+        android:layout_height="65dp"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:orientation="horizontal"
+        android:background="@color/inputBackground">
+        <ImageButton
+            android:id="@+id/button_record_audio"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginRight="10dp"
+            android:src="@drawable/button_audio"
+            android:scaleType="fitXY"
+            android:padding="0dp"
+            android:layout_weight="0"/>
         <EditText
+            android:id="@+id/txt_chat"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:background="@null"/>
+        <ImageButton
+            android:id="@+id/button_emoji"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="5dp"
+            android:src="@drawable/button_emoticon"
+            android:scaleType="fitXY"
+            android:padding="0dp"/>
+        <ImageButton
+            android:id="@+id/button_send"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="15dp"
+            android:src="@drawable/button_send"
+            android:scaleType="fitXY"
+            android:padding="0dp"
+            android:background="@null"/>
     </LinearLayout>
 </LinearLayout>
