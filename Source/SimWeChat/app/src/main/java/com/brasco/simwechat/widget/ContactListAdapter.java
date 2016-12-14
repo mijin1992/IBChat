@@ -1,0 +1,121 @@
+package com.brasco.simwechat.widget;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+import android.content.Context;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import com.brasco.simwechat.R;
+import com.brasco.simwechat.contact.Contact;
+
+public class ContactListAdapter extends ArrayAdapter<Contact>{
+
+	private int resource; // store the resource layout id for 1 row
+	private boolean inSearchMode = false;
+	
+	private ContactsSectionIndexer indexer = null;
+	
+	public ContactListAdapter(Context _context, int _resource, List<Contact> _items) {
+		super(_context, _resource, _items);
+		resource = _resource;
+		
+		// need to sort the items array first, then pass it to the indexer
+		Collections.sort(_items, new ContactItemComparator());
+		setIndexer(new ContactsSectionIndexer(_items));
+	
+	}
+	
+	// get the section textview from row view
+	// the section view will only be shown for the first item
+	public TextView getSectionTextView(View rowView){
+		TextView sectionTextView = (TextView)rowView.findViewById(R.id.txt_section);
+		return sectionTextView;
+	}
+	
+	public void showSectionViewIfFirstItem(View rowView, Contact item, int position){
+		TextView sectionTextView = getSectionTextView(rowView);
+		
+		// if in search mode then dun show the section header
+		if(inSearchMode){
+	    	sectionTextView.setVisibility(View.GONE);
+	    }
+	    else
+	    {
+		    // if first item then show the header
+	    	
+		    if(indexer.isFirstItemInSection(position)){
+		    	
+		    	String sectionTitle = indexer.getSectionTitle(item.getUserName());
+		    	sectionTextView.setText(sectionTitle);
+		    	sectionTextView.setVisibility(View.VISIBLE);
+		    	
+		    }
+		    else
+		    	sectionTextView.setVisibility(View.GONE);
+	    }
+	}
+	
+	// do all the data population for the row here
+	// subclass overwrite this to draw more items
+	public void populateDataForRow(View parentView, Contact item , int position){
+		// default just draw the item only
+		View infoView = parentView.findViewById(R.id.container_contact);
+		TextView nameView = (TextView)infoView.findViewById(R.id.txt_contact);
+		nameView.setText(item.getUserName());
+	}
+	
+	// this should be override by subclass if necessary
+	@Override
+	public View getView(int position, View convertView, ViewGroup parent) {
+		ViewGroup parentView;
+		
+		Contact item = getItem(position);
+		
+		//Log.i("ContactListAdapter", "item: " + item.getItemForIndex());
+		
+		if (convertView == null) {
+	    	parentView = new LinearLayout(getContext()); // Assumption: the resource parent id is a linear layout
+	    	String inflater = Context.LAYOUT_INFLATER_SERVICE;
+	    	LayoutInflater vi = (LayoutInflater)getContext().getSystemService(inflater);
+	    	vi.inflate(resource, parentView, true);
+	    } else {
+	    	parentView = (LinearLayout) convertView;
+	    }
+	    
+	    // for the very first section item, we will draw a section on top
+		showSectionViewIfFirstItem(parentView, item, position);
+	    
+		// set row items here
+		populateDataForRow(parentView, item, position);
+		
+		return parentView;
+		
+	}
+
+	public boolean isInSearchMode() {
+		return inSearchMode;
+	}
+
+	public void setInSearchMode(boolean inSearchMode) {
+		this.inSearchMode = inSearchMode;
+	}
+
+	public ContactsSectionIndexer getIndexer() {
+		return indexer;
+	}
+
+	public void setIndexer(ContactsSectionIndexer indexer) {
+		this.indexer = indexer;
+	}
+	
+	
+	
+}
