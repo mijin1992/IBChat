@@ -22,17 +22,10 @@ public class LogInActivity extends IBActivity implements View.OnClickListener {
     private EditText m_txtUserId = null;
     private EditText m_txtPassword = null;
 
-    private boolean m_bCheckPermission = false;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_log_in);
-
-        if (!m_bCheckPermission) {
-            Log.d(TAG, "permission NOT checked");
-            checkPermissions();
-        }
 
         m_btnLogin = (Button) findViewById(R.id.btn_login);
         m_btnLogin.setEnabled(false);
@@ -87,27 +80,6 @@ public class LogInActivity extends IBActivity implements View.OnClickListener {
             case R.id.btn_sign_up:
                 signUp();
                 break;
-        }
-    }
-
-    public void checkPermissions() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            Log.d("MyApp", "SDK >= 23");
-            if  (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED
-                    && ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
-                    && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                    && ActivityCompat.checkSelfPermission(this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED
-                    && ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-                Log.d(TAG, "Request permission");
-                ActivityCompat.requestPermissions(this, new String[]{ Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                        Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.INTERNET, Manifest.permission.RECORD_AUDIO }, 800);
-            } else {
-                Log.d(TAG, "Permission granted");
-                m_bCheckPermission = true;
-            }
-        }
-        else {
-            Log.d(TAG, "Android < 6.0");
         }
     }
 

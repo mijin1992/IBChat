@@ -2,6 +2,8 @@ package com.brasco.simwechat;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -15,6 +17,9 @@ import android.widget.ToggleButton;
 //import com.nguyenhoanglam.imagepicker.activity.ImagePickerActivity;
 //import com.nguyenhoanglam.imagepicker.model.Image;
 
+import com.brasco.simwechat.countrypicker.CountryPicker;
+import com.brasco.simwechat.countrypicker.CountryPickerListener;
+
 import java.io.File;
 import java.util.ArrayList;
 
@@ -24,21 +29,24 @@ public class SignUpActivity extends IBActivity implements View.OnClickListener {
 //    private ArrayList<Image> m_imgAvatarList = new ArrayList<>();
     private EditText m_txtFullName = null;
     private LinearLayout m_btnSelectCountry = null;
+    private TextView m_txtCountry = null;
     private EditText m_txtDialCode = null;
     private EditText m_txtMobileNumber = null;
     private EditText m_txtPassword = null;
     private ToggleButton m_btnShowPassword = null;
     private Button m_btnSignUp = null;
 
+    private CountryPicker m_CountryPicker = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
-        overridePendingTransition(R.anim.activity_enter, R.anim.activity_leave);
 
         m_btnSelectAvatar = (ImageButton) findViewById(R.id.btn_select_avatar);
         m_txtFullName = (EditText) findViewById(R.id.txt_full_name);
         m_btnSelectCountry = (LinearLayout) findViewById(R.id.btn_select_country);
+        m_txtCountry = (TextView) findViewById(R.id.txt_country);
         m_txtDialCode = (EditText) findViewById(R.id.txt_dial_code);
         m_txtMobileNumber = (EditText) findViewById(R.id.txt_phone_number);
         m_txtPassword = (EditText) findViewById(R.id.txt_input_password);
@@ -48,6 +56,15 @@ public class SignUpActivity extends IBActivity implements View.OnClickListener {
         m_btnSelectCountry.setOnClickListener(this);
         m_btnShowPassword.setOnClickListener(this);
         m_btnSignUp.setOnClickListener(this);
+
+        m_CountryPicker = CountryPicker.newInstance("Select Region");
+        m_CountryPicker.setListener(new CountryPickerListener() {
+            @Override
+            public void onSelectCountry(String name, String code) {
+                m_txtCountry.setText(name);
+                m_CountryPicker.dismiss();
+            }
+        });
 
         ActionBar("Sign Up");
     }
@@ -72,6 +89,7 @@ public class SignUpActivity extends IBActivity implements View.OnClickListener {
                 showImageFileChooser();
                 break;
             case R.id.btn_select_country:
+                m_CountryPicker.show(getSupportFragmentManager(), "COUNTRY_PICKER");
                 break;
             case R.id.btn_show_password:
                 break;
