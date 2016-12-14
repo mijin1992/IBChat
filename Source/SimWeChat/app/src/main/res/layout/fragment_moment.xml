@@ -20,7 +20,9 @@
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_gravity="center_vertical"
-            android:src="@drawable/button_moments"/>
+            android:src="@drawable/button_moments"
+            android:focusable="false"
+            android:focusableInTouchMode="false"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -28,7 +30,9 @@
             android:layout_marginLeft="20dp"
             android:text="Moments"
             android:textColor="@color/textViewColor"
-            android:textSize="16sp"/>
+            android:textSize="16sp"
+            android:focusable="false"
+            android:focusableInTouchMode="false"/>
     </LinearLayout>
 
 

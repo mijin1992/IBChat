@@ -1,9 +1,8 @@
 package com.brasco.simwechat;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-public class ChatActivity extends AppCompatActivity {
+public class ChatActivity extends IBActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

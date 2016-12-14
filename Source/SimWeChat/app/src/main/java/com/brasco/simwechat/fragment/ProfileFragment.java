@@ -10,6 +10,7 @@ import android.widget.LinearLayout;
 
 import com.brasco.simwechat.LogInActivity;
 import com.brasco.simwechat.MainActivity;
+import com.brasco.simwechat.PostActivity;
 import com.brasco.simwechat.ProfileActivity;
 import com.brasco.simwechat.R;
 
@@ -20,9 +21,10 @@ import com.brasco.simwechat.R;
  * Use the {@link ProfileFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ProfileFragment extends Fragment {
+public class ProfileFragment extends Fragment implements View.OnClickListener {
 
     LinearLayout m_btnProfile = null;
+    LinearLayout m_btnPost = null;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -51,13 +53,23 @@ public class ProfileFragment extends Fragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_profile, container, false);
         m_btnProfile = (LinearLayout) v.findViewById(R.id.button_profile);
-        m_btnProfile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getContext(), ProfileActivity.class);
-                startActivity(intent);
-            }
-        });
+        m_btnProfile.setOnClickListener(this);
+        m_btnPost = (LinearLayout) v.findViewById(R.id.button_post);
+        m_btnPost.setOnClickListener(this);
         return v;
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.button_profile:
+                Intent intent1 = new Intent(getContext(), ProfileActivity.class);
+                startActivity(intent1);
+                break;
+            case R.id.button_post:
+                Intent intent2 = new Intent(getContext(), PostActivity.class);
+                startActivity(intent2);
+                break;
+        }
     }
 }

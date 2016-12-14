@@ -6,7 +6,6 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -14,16 +13,13 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.TextView;
 
-public class LogInActivity extends AppCompatActivity implements View.OnClickListener {
+public class LogInActivity extends IBActivity implements View.OnClickListener {
     private static final String TAG = "Ibrahima Chat";
     private Button m_btnLogin = null;
     private Button m_btnSignUp = null;
     private Button m_btnForgotPasswd = null;
-    private ImageView m_ivUserImage = null;
-    private TextView m_txtUserName = null;
+    private EditText m_txtUserId = null;
     private EditText m_txtPassword = null;
 
     private boolean m_bCheckPermission = false;
@@ -46,8 +42,21 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
         m_btnForgotPasswd.setOnClickListener(this);
         m_btnSignUp.setOnClickListener(this);
 
-        m_ivUserImage = (ImageView) findViewById(R.id.img_user_avatar);
-        m_txtUserName = (TextView) findViewById(R.id.txt_user_name);
+        m_txtUserId = (EditText) findViewById(R.id.txt_user_id);
+        m_txtUserId.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                textChanged();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
         m_txtPassword = (EditText) findViewById(R.id.txt_user_password);
         m_txtPassword.addTextChangedListener(new TextWatcher() {
             @Override
@@ -56,11 +65,7 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (m_txtPassword.getText().toString().trim().isEmpty()) {
-                    m_btnLogin.setEnabled(false);
-                } else {
-                    m_btnLogin.setEnabled(true);
-                }
+                textChanged();
             }
 
             @Override
@@ -121,5 +126,13 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
     private void signUp() {
         Intent intent = new Intent(LogInActivity.this, SignUpActivity.class);
         startActivity(intent);
+    }
+
+    private void textChanged() {
+        if (m_txtUserId.getText().toString().trim().isEmpty() || m_txtPassword.getText().toString().trim().isEmpty()) {
+            m_btnLogin.setEnabled(false);
+        } else {
+            m_btnLogin.setEnabled(true);
+        }
     }
 }

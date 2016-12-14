@@ -1,13 +1,13 @@
 package com.brasco.simwechat;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-public class ProfileActivity extends AppCompatActivity {
+public class ProfileActivity extends IBActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+        ActionBar("My Profile");
     }
 }

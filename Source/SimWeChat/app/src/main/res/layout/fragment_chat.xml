@@ -4,10 +4,12 @@
     android:layout_height="match_parent"
     tools:context="com.brasco.simwechat.fragment.ChatFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <android.support.v7.widget.RecyclerView
+    <ListView
         android:id="@+id/list_chats"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="match_parent"
+        android:layout_gravity="top|center_horizontal"
+        android:layout_weight="1"
+        android:choiceMode="singleChoice" />
 
 </FrameLayout>

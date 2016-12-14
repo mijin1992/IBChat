@@ -1,12 +1,11 @@
 package com.brasco.simwechat;
 
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.halzhang.android.library.BottomTabIndicator;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends IBActivity {
 
     private ViewPager m_ViewPager = null;
     private BottomTabIndicator m_TabView = null;
@@ -21,5 +20,6 @@ public class MainActivity extends AppCompatActivity {
         m_ViewPager.setAdapter(m_Adapter);
         m_TabView = (BottomTabIndicator) findViewById(R.id.tab_indicator);
         m_TabView.setViewPager(m_ViewPager);
+        m_TabView.setCurrentItem(0);
     }
 }

@@ -1,8 +1,6 @@
 package com.brasco.simwechat;
 
 import android.content.Intent;
-import android.net.Uri;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -20,7 +18,7 @@ import android.widget.ToggleButton;
 import java.io.File;
 import java.util.ArrayList;
 
-public class SignUpActivity extends AppCompatActivity implements View.OnClickListener {
+public class SignUpActivity extends IBActivity implements View.OnClickListener {
     private static final int REQUEST_CODE_PICKER = 100;
     private ImageButton m_btnSelectAvatar = null;
 //    private ArrayList<Image> m_imgAvatarList = new ArrayList<>();
@@ -36,6 +34,8 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
+        overridePendingTransition(R.anim.activity_enter, R.anim.activity_leave);
+
         m_btnSelectAvatar = (ImageButton) findViewById(R.id.btn_select_avatar);
         m_txtFullName = (EditText) findViewById(R.id.txt_full_name);
         m_btnSelectCountry = (LinearLayout) findViewById(R.id.btn_select_country);
@@ -48,6 +48,8 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         m_btnSelectCountry.setOnClickListener(this);
         m_btnShowPassword.setOnClickListener(this);
         m_btnSignUp.setOnClickListener(this);
+
+        ActionBar("Sign Up");
     }
 
     @Override
