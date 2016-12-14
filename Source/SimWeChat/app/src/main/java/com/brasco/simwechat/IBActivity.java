@@ -16,13 +16,13 @@ public class IBActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        overridePendingTransition(R.anim.activity_enter, R.anim.activity_leave);
+        overridePendingTransition(R.anim.in_left, R.anim.out_left);
     }
 
     @Override
-    protected void onDestroy() {
-        overridePendingTransition(R.anim.activity_leave, R.anim.activity_enter);
-        super.onDestroy();
+    public void onBackPressed() {
+        finish();
+        overridePendingTransition(R.anim.in_right, R.anim.out_right);
     }
 
     public void ActionBar(String title) {
