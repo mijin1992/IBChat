@@ -88,11 +88,10 @@
         android:layout_height="30dp"
         android:orientation="horizontal">
         <TextView
-            android:layout_width="30dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:text="+"
-            android:textAlignment="textEnd"
             android:textColor="@color/textViewColor"
             android:textSize="14sp"/>
         <EditText
@@ -100,6 +99,7 @@
             android:layout_width="70dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
+            android:inputType="number"
             android:text="1"
             android:textColor="@color/textViewColor"
             android:textSize="14sp"
@@ -159,5 +159,5 @@
         android:textAllCaps="false"
         android:textSize="20sp"
         android:textColor="@color/buttonTextColor1"
-        android:background="@drawable/shape_login_button" />
+        android:background="@drawable/shape_button_1" />
 </LinearLayout>

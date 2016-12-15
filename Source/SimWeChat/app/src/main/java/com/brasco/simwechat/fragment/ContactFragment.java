@@ -1,5 +1,6 @@
 package com.brasco.simwechat.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -7,8 +8,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 
+import com.brasco.simwechat.ContactProfileActivity;
 import com.brasco.simwechat.R;
 import com.brasco.simwechat.contact.Contact;
+import com.brasco.simwechat.utils.Utils;
 import com.brasco.simwechat.widget.ContactItemInterface;
 import com.brasco.simwechat.widget.ContactListAdapter;
 import com.brasco.simwechat.widget.ContactListView;
@@ -67,6 +70,10 @@ public class ContactFragment extends Fragment {
             public void onItemClick(AdapterView parent, View v, int position, long id) {
                 List<Contact> searchList = m_inSearchMode ? m_Filters : m_Contacts;
                 float lastTouchX = m_lstContact.getScroller().getLastTouchDownEventX();
+                Contact contact = searchList.get(position);
+                Intent intent = new Intent(getContext(), ContactProfileActivity.class);
+                intent.putExtra(Utils.KEY_USER_ID, contact.getUserId());
+                startActivity(intent);
             }
         });
 

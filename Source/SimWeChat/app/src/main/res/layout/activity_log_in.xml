@@ -72,7 +72,7 @@
             android:textAllCaps="false"
             android:textSize="20sp"
             android:textColor="@color/buttonTextColor1"
-            android:background="@drawable/shape_login_button"/>
+            android:background="@drawable/shape_button_1"/>
         <Button
             android:id="@+id/btn_forgot_password"
             android:layout_width="wrap_content"

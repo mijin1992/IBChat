@@ -19,6 +19,8 @@ import android.widget.ToggleButton;
 
 import com.brasco.simwechat.countrypicker.CountryPicker;
 import com.brasco.simwechat.countrypicker.CountryPickerListener;
+import com.brasco.simwechat.utils.Utils;
+import com.bumptech.glide.util.Util;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -62,6 +64,10 @@ public class SignUpActivity extends IBActivity implements View.OnClickListener {
             @Override
             public void onSelectCountry(String name, String code) {
                 m_txtCountry.setText(name);
+                String strDialCode = "999";
+                if (Utils.Country2DialCode.containsKey(code))
+                    strDialCode = Utils.Country2DialCode.get(code);
+                m_txtDialCode.setText(strDialCode);
                 m_CountryPicker.dismiss();
             }
         });

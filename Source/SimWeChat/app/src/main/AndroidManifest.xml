@@ -34,7 +34,9 @@
             android:windowSoftInputMode="adjustPan" />
         <activity android:name=".ProfileActivity" />
         <activity android:name=".PostActivity" />
-        <activity android:name=".MomentActivity"></activity>
+        <activity android:name=".MomentActivity" />
+        <activity android:name=".ContactProfileActivity" />
+        <activity android:name=".CallActivity"></activity>
     </application>
 
 </manifest>
