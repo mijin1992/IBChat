@@ -47,7 +47,8 @@
             android:layout_marginLeft="5dp"
             android:src="@drawable/button_emoticon"
             android:scaleType="fitXY"
-            android:padding="0dp"/>
+            android:padding="0dp"
+            android:background="@android:color/transparent"/>
         <ImageButton
             android:id="@+id/button_send"
             android:layout_width="35dp"
@@ -59,4 +60,10 @@
             android:padding="0dp"
             android:background="@null"/>
     </LinearLayout>
+    <FrameLayout
+        android:id="@+id/emojicons"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:orientation="horizontal"
+        android:visibility="gone"/>
 </LinearLayout>
