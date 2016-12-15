@@ -34,6 +34,7 @@
                 android:layout_gravity="center_vertical"
                 android:background="@null"
                 android:hint="User ID"
+                android:maxLines="1"
                 android:textColorHint="@color/hintColor"/>
         </LinearLayout>
         <LinearLayout

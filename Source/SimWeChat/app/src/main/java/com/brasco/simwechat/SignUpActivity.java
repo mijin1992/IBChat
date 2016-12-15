@@ -8,6 +8,7 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -66,8 +67,10 @@ public class SignUpActivity extends IBActivity implements View.OnClickListener {
     private ToggleButton m_btnShowPassword = null;
     private Button m_btnSignUp = null;
 
+    private boolean m_bShowPassword = false;
+
     private CountryPicker m_CountryPicker = null;
-private QBUser userForSave;
+    private QBUser userForSave;
     private MyProgressDialog myProgressDialog;
     QBUser mQBUser;
     private String mLogoImagePath = "";
@@ -149,6 +152,11 @@ private QBUser userForSave;
                 m_CountryPicker.show(getSupportFragmentManager(), "COUNTRY_PICKER");
                 break;
             case R.id.btn_show_password:
+                m_bShowPassword = !m_bShowPassword;
+                if (m_bShowPassword)
+                    m_txtPassword.setInputType(InputType.TYPE_CLASS_TEXT);
+                else
+                    m_txtPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
                 break;
             case R.id.button_sign_up:
                 signUp();
