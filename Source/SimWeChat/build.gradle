@@ -6,7 +6,8 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:2.2.2'
-
+        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
+        classpath 'com.google.gms:google-services:3.0.0'
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
@@ -14,6 +15,9 @@ buildscript {
 
 allprojects {
     repositories {
+        maven { url "http://dl.bintray.com/populov/maven" }
+        maven { url "https://raw.githubusercontent.com/layerhq/releases-android/master/releases/" }
+        maven { url "https://github.com/QuickBlox/quickblox-android-sdk-releases/raw/master/" }
         jcenter()
         maven { url "https://jitpack.io" }
     }

@@ -10,7 +10,9 @@ import android.widget.AdapterView;
 
 import com.brasco.simwechat.ContactProfileActivity;
 import com.brasco.simwechat.R;
+import com.brasco.simwechat.app.AppGlobals;
 import com.brasco.simwechat.contact.Contact;
+import com.brasco.simwechat.model.UserData;
 import com.brasco.simwechat.utils.Utils;
 import com.brasco.simwechat.widget.ContactItemInterface;
 import com.brasco.simwechat.widget.ContactListAdapter;
@@ -28,8 +30,8 @@ import java.util.List;
  */
 public class ContactFragment extends Fragment {
     private ContactListView m_lstContact = null;
-    private ArrayList<Contact> m_Contacts = new ArrayList<>();
-    private ArrayList<Contact> m_Filters = new ArrayList<>();
+    private ArrayList<UserData> m_Filters = new ArrayList<>();
+    private ArrayList<UserData> m_Contacts = new ArrayList<UserData>();
     private ContactListAdapter m_Adapter = null;
 
     private boolean m_inSearchMode = false;
@@ -61,16 +63,16 @@ public class ContactFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_contact, container, false);
         m_lstContact = (ContactListView) view.findViewById(R.id.list_contact);
-        setSampleContactList();
+        setContactList();
         m_Adapter = new ContactListAdapter(getContext(), R.layout.item_contact, m_Contacts);
         m_lstContact.setFastScrollEnabled(true);
         m_lstContact.setAdapter(m_Adapter);
         m_lstContact.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView parent, View v, int position, long id) {
-                List<Contact> searchList = m_inSearchMode ? m_Filters : m_Contacts;
+                List<UserData> searchList = m_inSearchMode ? m_Filters : m_Contacts;
                 float lastTouchX = m_lstContact.getScroller().getLastTouchDownEventX();
-                Contact contact = searchList.get(position);
+                UserData contact = searchList.get(position);
                 Intent intent = new Intent(getContext(), ContactProfileActivity.class);
                 intent.putExtra(Utils.KEY_USER_ID, contact.getUserId());
                 startActivity(intent);
@@ -81,27 +83,10 @@ public class ContactFragment extends Fragment {
     }
 
     // temporary
-    private void setSampleContactList() {
-        m_Contacts.add(new Contact("Lizbeth", "Lizbeth Crockett"));
-        m_Contacts.add(new Contact("Zachery", "Zachery Loranger"));
-        m_Contacts.add(new Contact("Vada", "Vada Winegar"));
-        m_Contacts.add(new Contact("Essie", "Essie Pass"));
-        m_Contacts.add(new Contact("Gracia", "Gracia Ringdahl"));
-        m_Contacts.add(new Contact("Roselia", "Roselia Benjamin"));
-        m_Contacts.add(new Contact("Venice", "Venice Facey"));
-        m_Contacts.add(new Contact("Lanita", "Lanita Welcher"));
-        m_Contacts.add(new Contact("Chana", "Chana Hollin"));
-        m_Contacts.add(new Contact("Stella", "Stella Ketterer"));
-
-        m_Contacts.add(new Contact("Pete", "Pete Ibrahim"));
-        m_Contacts.add(new Contact("Dwain", "Dwain Cowher"));
-        m_Contacts.add(new Contact("Terisa", "Terisa Griner") );
-        m_Contacts.add(new Contact("Delisa", "Delisa Deak"));
-        m_Contacts.add(new Contact("Zada", "Zada Buckingham"));
-        m_Contacts.add(new Contact("Rosalie", "Rosalie Rohrer"));
-        m_Contacts.add(new Contact("Gladis", "Gladis Milhorn"));
-        m_Contacts.add(new Contact("Branda", "Branda Respass"));
-        m_Contacts.add(new Contact("Tory", "Tory Stanislawski"));
-
+    private void setContactList() {
+        m_Contacts.clear();
+        for (int i=0; i < AppGlobals.mAllUserData.size(); i++) {
+            m_Contacts.add(AppGlobals.mAllUserData.get(i));
+        }
     }
 }

@@ -15,4 +15,65 @@
     <color name="chatBackground">#ebebeb</color>
     <color name="inputBackground">#fff</color>
     <color name="tabTextColor">#a2a2a2</color>
+
+    <color name="orange_dark">#d05900</color>
+    <color name="white_trans0">#00ffffff</color>
+    <color name="transparent">#00000000</color>
+
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="gray">#CCCCCC</color>
+    <color name="colorSecondary">#F29E7E</color>
+    <color name="colorSecondaryAccent">#F9C0AF</color>
+    <color name="btnBorderedUnpressed">#FFFFFF</color>
+    <color name="btnBorderedPressed">#CCCCCC</color>
+    <color name="greyAccent">#dedede</color>
+    <color name="colorOrange">#7fe3e7</color>
+    <color name="colorOrangeAccent">#00c8cf</color>
+    <color name="colorOrangeLight">#7fe3e7</color>
+    <color name="colorBrightPink">#7fe3e7</color>
+    <color name="colorPinkAccent">#00c8cf</color>
+    <color name="colorWarmGray">#B3B3B3</color>
+    <color name="color_grey">#d3d3d3</color>
+
+
+    <color name="text_color_primary">#212121</color>
+    <color name="text_color_white">#ffffff</color>
+    <color name="text_color_black">#000000</color>
+    <color name="text_color_light_grey">#dedede</color>
+    <color name="text_color_medium_grey">#b1b1b1</color>
+    <color name="text_color_medium_dark_grey">#747474</color>
+    <color name="text_color_dark_grey">#6e6e6e</color>
+    <color name="divider_color">#e0e0e0</color>
+
+    <color name="color_primary">@color/white</color>
+    <color name="color_primary_dark">#d0d0d0</color>
+    <color name="color_accent">@color/color_green_qb</color>
+
+    <color name="background_app_color">#ffffff</color>
+
+    <color name="color_blue_qb">#046ad0</color>
+    <color name="color_green_qb">#4ad24d</color>
+    <color name="color_username_rectangle">#99000000</color>
+
+    <color name="white_trans">#80ffffff</color>
+    <color name="black_trans">#80000000</color>
+    <color name="red_light">#f15858</color>
+    <color name="green">#239c1d</color>
+    <color name="orange_light">#ff9f10</color>
+    <color name="orange">#f68c20</color>
+    <color name="blue">#2f8cff</color>
+    <color name="grey">#4b4b4b</color>
+    <color name="grey_light">#9fa2a4</color>
+    <color name="grey_light_more">#c4c4c4</color>
+    <color name="grey_light_extra">#f0f0f0</color>
+    <color name="yellow">#ffff00</color>
+    <color name="logo_border_color">#00111111</color>
+    <color name="instruction_bg">#ffc37d</color>
+
+    <!-- Text -->
+    <color name="text_normal">#333333</color>
+    <color name="text_light">#9fa2a4</color>
+
+    <color name="grey_transparent_20">#20606060</color>
 </resources>

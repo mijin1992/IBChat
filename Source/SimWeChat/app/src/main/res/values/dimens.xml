@@ -2,6 +2,72 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
+
     <dimen name="cp_dialog_width">200dp</dimen>
     <dimen name="cp_dialog_height">300dp</dimen>
+<dimen name="fab_margin">16dp</dimen>
+    <dimen name="title_text_size">22sp</dimen>
+    <dimen name="mid_text_size">14sp</dimen>
+    <dimen name="small_text_size">12sp</dimen>
+    <dimen name="large_small_text_size">10sp</dimen>
+    <dimen name="setting_text_size">18sp</dimen>
+    <dimen name="avatar_message_size">50dp</dimen>
+    <dimen name="received_message_image_size">23dp</dimen>
+
+    <dimen name="small_text">16sp</dimen>
+    <dimen name="medium_text">20sp</dimen>
+    <dimen name="large_text">28sp</dimen>
+    <dimen name="match_photo_size">124dp</dimen>
+    <dimen name="badge_text_size">16sp</dimen>
+
+    <dimen name="padding_common">8dp</dimen>
+    <dimen name="padding_common_twice">16dp</dimen>
+
+    <dimen name="splash_main_text_size">32sp</dimen>
+    <dimen name="splash_version_text_size">12sp</dimen>
+
+    <dimen name="fab_margin_right">16dp</dimen>
+    <dimen name="fab_margin_bottom">16dp</dimen>
+
+    <dimen name="chat_author_text_size">16sp</dimen>
+    <dimen name="chat_attachment_preview_size">80dp</dimen>
+    <dimen name="chat_attachment_view_size">300dp</dimen>
+
+    <dimen name="chat_message_body_text_size">16sp</dimen>
+    <dimen name="chat_message_info_text_size">13sp</dimen>
+    <dimen name="chat_message_content_margin">4dp</dimen>
+    <dimen name="chat_message_username_margin">@dimen/chat_message_content_margin</dimen>
+
+    <dimen name="chat_message_attachment_username_margin">12dp</dimen>
+    <dimen name="chat_message_attachment_size">160dp</dimen>
+
+    <dimen name="chat_date_text_size">13sp</dimen>
+    <dimen name="chat_date_header_top_margin">30dp</dimen>
+
+    <dimen name="margin_very_small">1dp</dimen>
+    <dimen name="margin_extra_small">2dp</dimen>
+    <dimen name="margin_small">4dp</dimen>
+    <dimen name="margin_normal">8dp</dimen>
+    <dimen name="margin_large">16dp</dimen>
+    <dimen name="margin_extra_large">32dp</dimen>
+    <dimen name="margin_very_large">48dp</dimen>
+    <dimen name="margin_really_large">64dp</dimen>
+    <dimen name="textsize_very_small">8sp</dimen>
+    <dimen name="textsize_extra_small">10sp</dimen>
+    <dimen name="textsize_small">12sp</dimen>
+    <dimen name="textsize_normal">14sp</dimen>
+    <dimen name="textsize_large">16sp</dimen>
+    <dimen name="textsize_extra_large">18sp</dimen>
+    <dimen name="textsize_very_large">21sp</dimen>
+    <dimen name="textsize_really_large">24sp</dimen>
+
+    <!-- Image Size -->
+    <dimen name="image_very_small">12dp</dimen>
+    <dimen name="image_extra_small">24dp</dimen>
+    <dimen name="image_more_small">36dp</dimen>
+    <dimen name="image_small">48dp</dimen>
+    <dimen name="image_normal">72dp</dimen>
+    <dimen name="image_large">96dp</dimen>
+    <dimen name="image_extra_large">128dp</dimen>
+    <dimen name="image_very_large">144dp</dimen>
 </resources>

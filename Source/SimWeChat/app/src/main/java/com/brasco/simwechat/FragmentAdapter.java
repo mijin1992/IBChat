@@ -8,14 +8,17 @@ import com.brasco.simwechat.fragment.ChatFragment;
 import com.brasco.simwechat.fragment.ContactFragment;
 import com.brasco.simwechat.fragment.MomentFragment;
 import com.brasco.simwechat.fragment.ProfileFragment;
+import com.brasco.simwechat.model.RecentMessageData;
+import com.brasco.simwechat.model.UserData;
 import com.halzhang.android.library.BottomTabFragmentPagerAdapter;
+
+import java.util.ArrayList;
 
 /**
  * Created by Mikhail on 12/9/2016.
  */
 
 public class FragmentAdapter extends BottomTabFragmentPagerAdapter {
-
     private Context m_Context = null;
 
     public FragmentAdapter(Context context, FragmentManager fm) {

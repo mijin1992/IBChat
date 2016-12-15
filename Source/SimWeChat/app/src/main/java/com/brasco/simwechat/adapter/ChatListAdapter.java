@@ -8,6 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.brasco.simwechat.MainActivity;
 import com.brasco.simwechat.R;
 import com.brasco.simwechat.message.Message;
 import com.brasco.simwechat.utils.Utils;
@@ -23,6 +24,7 @@ public class ChatListAdapter extends BaseAdapter {
     private List<Message> listData;
     private Vector<ViewHolder> m_viewHolder = new Vector<>();
     private LayoutInflater layoutInflater;
+    private MainActivity mActivity;
 
     static class ViewHolder {
         ImageView _userImage;
@@ -35,6 +37,7 @@ public class ChatListAdapter extends BaseAdapter {
         this.listData = listData;
         layoutInflater = LayoutInflater.from(aContext);
         m_viewHolder.clear();
+        mActivity = (MainActivity) aContext;
     }
 
     @Override
@@ -73,6 +76,13 @@ public class ChatListAdapter extends BaseAdapter {
         String strTime = Long.toString(listData.get(position).getTime());
         holder._date.setText(strTime);
         m_viewHolder.add(holder);
+
+        convertView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mActivity.startChatActivity(null);
+            }
+        });
         return convertView;
     }
 }

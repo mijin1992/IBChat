@@ -10,6 +10,7 @@ import android.widget.ListView;
 import com.brasco.simwechat.R;
 import com.brasco.simwechat.adapter.ChatListAdapter;
 import com.brasco.simwechat.message.Message;
+import com.brasco.simwechat.model.RecentMessageData;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -25,6 +26,7 @@ import java.util.Calendar;
 public class ChatFragment extends Fragment {
     private ListView m_lstChatView;
     private ArrayList<Message> m_ChatList = new ArrayList<>();
+    private ArrayList<RecentMessageData> mRecentessageArray = new ArrayList<RecentMessageData>();
     private ChatListAdapter m_Adapter = null;
 
     public ChatFragment() {

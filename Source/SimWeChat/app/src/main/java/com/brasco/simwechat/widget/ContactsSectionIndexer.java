@@ -6,6 +6,7 @@ import java.util.List;
 import android.widget.SectionIndexer;
 
 import com.brasco.simwechat.contact.Contact;
+import com.brasco.simwechat.model.UserData;
 
 public class ContactsSectionIndexer implements SectionIndexer {
 
@@ -23,7 +24,7 @@ public class ContactsSectionIndexer implements SectionIndexer {
 	private int mCount; // this is the count for total number of contacts
 	
 	// Assumption: the contacts array has been sorted
-	public ContactsSectionIndexer(List<Contact> contacts) {
+	public ContactsSectionIndexer(List<UserData> contacts) {
 		mCount = contacts.size();
 		
 		initPositions(contacts);
@@ -71,7 +72,7 @@ public class ContactsSectionIndexer implements SectionIndexer {
 	}
 	
 	// initialize the position index
-	public void initPositions(List<Contact> contacts)  {
+	public void initPositions(List<UserData> contacts)  {
 		
 		int sectionCount = mSections.length;
 		mPositions = new int[sectionCount];
@@ -81,9 +82,9 @@ public class ContactsSectionIndexer implements SectionIndexer {
 		// Assumption: list of items have already been sorted by the prefer names
 		int itemIndex = 0;
 		
-		for(Contact contact: contacts){
+		for(UserData contact: contacts){
 			
-			String indexableItem = contact.getUserName();
+			String indexableItem = contact.getFullName();
 			int sectionIndex = getSectionIndex(indexableItem); // find out which section this item belong to
 			
 			if(mPositions[sectionIndex] == -1) // if not set before, then do this, otherwise just ignore

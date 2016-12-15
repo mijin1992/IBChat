@@ -13,23 +13,28 @@ import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.brasco.simwechat.MainActivity;
 import com.brasco.simwechat.R;
 import com.brasco.simwechat.contact.Contact;
+import com.brasco.simwechat.model.UserData;
 
-public class ContactListAdapter extends ArrayAdapter<Contact>{
+public class ContactListAdapter extends ArrayAdapter<UserData>{
 
 	private int resource; // store the resource layout id for 1 row
 	private boolean inSearchMode = false;
 	
 	private ContactsSectionIndexer indexer = null;
+	private MainActivity mActivity;
 	
-	public ContactListAdapter(Context _context, int _resource, List<Contact> _items) {
+	public ContactListAdapter(Context _context, int _resource, List<UserData> _items) {
 		super(_context, _resource, _items);
 		resource = _resource;
 		
 		// need to sort the items array first, then pass it to the indexer
 		Collections.sort(_items, new ContactItemComparator());
 		setIndexer(new ContactsSectionIndexer(_items));
+
+		mActivity = (MainActivity)_context;
 	
 	}
 	
@@ -40,7 +45,7 @@ public class ContactListAdapter extends ArrayAdapter<Contact>{
 		return sectionTextView;
 	}
 	
-	public void showSectionViewIfFirstItem(View rowView, Contact item, int position){
+	public void showSectionViewIfFirstItem(View rowView, UserData item, int position){
 		TextView sectionTextView = getSectionTextView(rowView);
 		
 		// if in search mode then dun show the section header
@@ -53,7 +58,7 @@ public class ContactListAdapter extends ArrayAdapter<Contact>{
 	    	
 		    if(indexer.isFirstItemInSection(position)){
 		    	
-		    	String sectionTitle = indexer.getSectionTitle(item.getUserName());
+		    	String sectionTitle = indexer.getSectionTitle(item.getFullName());
 		    	sectionTextView.setText(sectionTitle);
 		    	sectionTextView.setVisibility(View.VISIBLE);
 		    	
@@ -65,11 +70,11 @@ public class ContactListAdapter extends ArrayAdapter<Contact>{
 	
 	// do all the data population for the row here
 	// subclass overwrite this to draw more items
-	public void populateDataForRow(View parentView, Contact item , int position){
+	public void populateDataForRow(View parentView, UserData item , int position){
 		// default just draw the item only
 		View infoView = parentView.findViewById(R.id.container_contact);
 		TextView nameView = (TextView)infoView.findViewById(R.id.txt_contact);
-		nameView.setText(item.getUserName());
+		nameView.setText(item.getFullName());
 	}
 	
 	// this should be override by subclass if necessary
@@ -77,7 +82,7 @@ public class ContactListAdapter extends ArrayAdapter<Contact>{
 	public View getView(int position, View convertView, ViewGroup parent) {
 		ViewGroup parentView;
 		
-		Contact item = getItem(position);
+		UserData item = getItem(position);
 		
 		//Log.i("ContactListAdapter", "item: " + item.getItemForIndex());
 		
@@ -95,6 +100,13 @@ public class ContactListAdapter extends ArrayAdapter<Contact>{
 	    
 		// set row items here
 		populateDataForRow(parentView, item, position);
+
+		parentView.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				mActivity.startChatActivity(null);
+			}
+		});
 		
 		return parentView;
 		

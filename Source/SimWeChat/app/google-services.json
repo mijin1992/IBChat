@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "25726407566",
+    "firebase_url": "https://my-chat-6fafc.firebaseio.com",
+    "project_id": "my-chat-6fafc",
+    "storage_bucket": "my-chat-6fafc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:25726407566:android:81d2d5e7896a97e2",
+        "android_client_info": {
+          "package_name": "com.brasco.simwechat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "25726407566-7jti12lm11qvtq1bcsuoca8qj473aavv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA2JDaA29eMJln9k1Pi56FLmeMisAC_qv0"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,9 +1,14 @@
 package com.brasco.simwechat;
 
+import android.app.Activity;
+import android.app.PendingIntent;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -21,15 +26,38 @@ import com.brasco.simwechat.countrypicker.CountryPicker;
 import com.brasco.simwechat.countrypicker.CountryPickerListener;
 import com.brasco.simwechat.utils.Utils;
 import com.bumptech.glide.util.Util;
+import com.brasco.simwechat.app.Constant;
+import com.brasco.simwechat.dialog.MyProgressDialog;
+import com.brasco.simwechat.model.DataHolder;
+import com.brasco.simwechat.utils.LogUtil;
+import com.brasco.simwechat.utils.ResourceUtil;
+import com.brasco.simwechat.quickblox.QBData;
+import com.brasco.simwechat.quickblox.core.utils.SharedPrefsHelper;
+import com.brasco.simwechat.quickblox.core.utils.Toaster;
+import com.brasco.simwechat.quickblox.services.CallService;
+import com.brasco.simwechat.quickblox.utils.SharedPreferencesUtil;
+import com.brasco.simwechat.quickblox.utils.chat.ChatHelper;
+import com.brasco.simwechat.quickblox.utils.qb.callback.QbEntityCallbackTwoTypeWrapper;
+import com.quickblox.chat.model.QBAttachment;
+import com.quickblox.content.QBContent;
+import com.quickblox.content.model.QBFile;
+import com.quickblox.core.QBEntityCallback;
+import com.quickblox.core.exception.QBResponseException;
+import com.quickblox.users.QBUsers;
+import com.quickblox.users.model.QBUser;
+
+import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
 import java.util.ArrayList;
 
 public class SignUpActivity extends IBActivity implements View.OnClickListener {
+    private static final String TAG = LogInActivity.class.getSimpleName();
     private static final int REQUEST_CODE_PICKER = 100;
     private ImageButton m_btnSelectAvatar = null;
 //    private ArrayList<Image> m_imgAvatarList = new ArrayList<>();
     private EditText m_txtFullName = null;
+    private EditText m_txtId = null;
     private LinearLayout m_btnSelectCountry = null;
     private TextView m_txtCountry = null;
     private EditText m_txtDialCode = null;
@@ -39,14 +67,23 @@ public class SignUpActivity extends IBActivity implements View.OnClickListener {
     private Button m_btnSignUp = null;
 
     private CountryPicker m_CountryPicker = null;
+private QBUser userForSave;
+    private MyProgressDialog myProgressDialog;
+    QBUser mQBUser;
+    private String mLogoImagePath = "";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
+        overridePendingTransition(R.anim.activity_enter, R.anim.activity_leave);
+
+        myProgressDialog = new MyProgressDialog(this, 0);
 
         m_btnSelectAvatar = (ImageButton) findViewById(R.id.btn_select_avatar);
         m_txtFullName = (EditText) findViewById(R.id.txt_full_name);
+        m_txtId = (EditText) findViewById(R.id.txt_id);
         m_btnSelectCountry = (LinearLayout) findViewById(R.id.btn_select_country);
         m_txtCountry = (TextView) findViewById(R.id.txt_country);
         m_txtDialCode = (EditText) findViewById(R.id.txt_dial_code);
@@ -78,13 +115,27 @@ public class SignUpActivity extends IBActivity implements View.OnClickListener {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE_PICKER && resultCode == RESULT_OK && data != null) {
-//            m_imgAvatarList = data.getParcelableArrayListExtra(ImagePickerActivity.INTENT_EXTRA_SELECTED_IMAGES);
-//            if (m_imgAvatarList.size() > 0) {
-//                Image imgAvatar = m_imgAvatarList.get(0);
-//                String imgPath = imgAvatar.getPath();
-//                Glide.with(this).load(Uri.fromFile(new File(imgPath))).into(m_btnSelectAvatar);
-//            }
+        if( resultCode == Activity.RESULT_OK) {
+            if (requestCode == Constant.REQ_PHOTO_FILE) {
+                LogUtil.writeDebugLog(TAG, "onActivityResult", "onActivityResult from CameraActivity");
+                mLogoImagePath = data.getStringExtra(Constant.EK_URL);
+                File image = new File(mLogoImagePath);
+                BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+                Bitmap bitmap = BitmapFactory.decodeFile(image.getAbsolutePath(),bmOptions);
+                bitmap = Bitmap.createScaledBitmap(bitmap, 800,800, true);
+                m_btnSelectAvatar.setImageBitmap(bitmap);
+                ResourceUtil.setVideoExtension(FilenameUtils.getExtension(mLogoImagePath));
+            }
+        } else if (resultCode == Constant.EXTRA_LOGIN_RESULT_CODE) {
+            LogUtil.writeDebugLog(TAG, "onActivityResult", "onActivityResult from callservice.");
+            boolean isLoginSuccess = data.getBooleanExtra(Constant.EXTRA_LOGIN_RESULT, false);
+            String errorMessage = data.getStringExtra(Constant.EXTRA_LOGIN_ERROR_MESSAGE);
+            if (isLoginSuccess) {
+                saveUserData(userForSave);
+                setAvatar();
+            } else {
+                Toaster.longToast(getString(R.string.login_chat_login_error) + errorMessage);
+            }
         }
     }
 
@@ -100,22 +151,169 @@ public class SignUpActivity extends IBActivity implements View.OnClickListener {
             case R.id.btn_show_password:
                 break;
             case R.id.button_sign_up:
+                signUp();
                 break;
         }
     }
 
     private void showImageFileChooser() {
-//        ImagePicker.create(this)
-//                .folderMode(true) // folder mode (false by default)
-//                .folderTitle("Folder") // folder selection title
-//                .imageTitle("Select Avatar") // image selection title
-//                .single() // single mode
-//                .multi() // multi mode (default mode)
-//                .limit(1) // max images can be selected (99 by default)
-//                .showCamera(true) // show camera or not (true by default)
-//                .imageDirectory("Camera") // directory name for captured image  ("Camera" folder by default)
-//                .origin(m_imgAvatarList) // original selected images, used in multi mode
-//                .start(REQUEST_CODE_PICKER); // start image picker activity with request code
+        Intent intent = new Intent(SignUpActivity.this, CameraActivity.class);
+        intent.putExtra(Constant.REQ_VIDEO_CAMERAACTIVITY_TYPE, Constant.REQ_IMAGE_TYPE);
+        startActivityForResult(intent, Constant.REQ_PHOTO_FILE);
+    }
 
+    private void QBUserSignIn(QBUser user){
+        LogUtil.writeDebugLog(TAG, "QBUserSignIn", "start");
+        ChatHelper.getInstance().login(user, new QBEntityCallback<Void>() {
+            @Override
+            public void onSuccess(Void aVoid, Bundle bundle) {
+                LogUtil.writeDebugLog(TAG, "QBUserSignIn", "onSuccess");
+                myProgressDialog.hide();
+                DataHolder.getInstance().addQbUser(mQBUser);
+                DataHolder.getInstance().setSignInQbUser(mQBUser);
+                SharedPreferencesUtil.saveQbUser(mQBUser);
+                QBData.curQBUser = mQBUser;
+                setResult(RESULT_OK, new Intent());
+
+//                Toaster.longToast("You was successfully sign in!");
+                Intent intent= new Intent(SignUpActivity.this, MainActivity.class);
+                startActivity(intent);
+                finish();
+            }
+
+            @Override
+            public void onError(QBResponseException e) {
+                LogUtil.writeDebugLog(TAG, "QBUserSignIn", "onError");
+                myProgressDialog.hide();
+                Toaster.longToast(e.getErrors().get(0));
+            }
+        });
+    }
+
+    private void QBUserSingUp(final QBUser user){
+        LogUtil.writeDebugLog(TAG, "QBUserSingUp", "start");
+        QBUsers.signUpSignInTask(user).performAsync(new QBEntityCallback<QBUser>() {
+            @Override
+            public void onSuccess(QBUser qbUser, Bundle bundle) {
+                LogUtil.writeDebugLog(TAG, "QBUserSingUp", "onSuccess");
+                mQBUser = qbUser;
+                user.setPassword(m_txtPassword.getText().toString().trim());
+                loginToChat(qbUser);
+            }
+
+            @Override
+            public void onError(QBResponseException error) {
+                LogUtil.writeDebugLog(TAG, "QBUserSingUp", "onError");
+                myProgressDialog.hide();
+                Toaster.longToast(error.getErrors().get(0));
+            }
+        });
+    }
+    private void loginToChat(final QBUser qbUser) {
+        LogUtil.writeDebugLog(TAG, "loginToChat", "start");
+        qbUser.setPassword(m_txtPassword.getText().toString().trim());
+        userForSave = qbUser;
+        startLoginService(qbUser);
+    }
+
+    public void signUp() {
+        LogUtil.writeDebugLog(TAG, "signUp", "start");
+        String login = m_txtId.getText().toString().trim();
+        String name = m_txtFullName.getText().toString().trim();
+        String password = m_txtPassword.getText().toString();
+        String dialCode = m_txtDialCode.getText().toString();
+        String phoneNumber = m_txtMobileNumber.getText().toString();
+
+        if (!isValidData(login, password, name, phoneNumber)) {
+            return;
+        }
+
+        myProgressDialog.show();
+
+        mQBUser = new QBUser();
+        mQBUser.setLogin(login);
+        mQBUser.setPassword(password);
+        mQBUser.setFullName(name);
+        mQBUser.setPhone(phoneNumber);
+        QBUserSingUp(mQBUser);
+    }
+
+    private void setAvatar(){
+        LogUtil.writeDebugLog(TAG, "setAvatar", "start");
+        File file  = new File(mLogoImagePath);
+        QBContent.uploadFileTask(file, true, null, null).performAsync(new QbEntityCallbackTwoTypeWrapper<QBFile, QBAttachment>(null)
+        {
+            @Override
+            public void onSuccess(QBFile qbFile, Bundle bundle) {
+                LogUtil.writeDebugLog(TAG, "setAvatar", "onSuccess");
+                String login = m_txtId.getText().toString().trim();
+                String password = m_txtPassword.getText().toString();
+                String name = m_txtFullName.getText().toString();
+                String phoneNumber = m_txtMobileNumber.getText().toString();
+                QBUser user = new QBUser();
+                user.setLogin(login);
+                Integer id = mQBUser.getId();
+                user.setId(id);
+                user.setFullName(name);
+                Integer uploadedFileID = qbFile.getId();
+                String pubUri = qbFile.getPublicUrl();
+                user.setFileId(uploadedFileID);
+                user.setCustomData(pubUri);
+                QBUsers.updateUser(user).performAsync(new QBEntityCallback<QBUser>() {
+                    @Override
+                    public void onSuccess(QBUser qbUser, Bundle bundle) {
+                        LogUtil.writeDebugLog(TAG, "setAvatar", "onSuccess_1");
+                        qbUser.setPassword(m_txtPassword.getText().toString().trim());
+                        QBUserSignIn(qbUser);
+                    }
+                    @Override
+                    public void onError(QBResponseException e) {
+                        LogUtil.writeDebugLog(TAG, "setAvatar", "onError_1");
+                        Toaster.longToast(e.getErrors().get(0));
+                        myProgressDialog.hide();
+                    }
+                });
+            }
+            @Override
+            public void onError(QBResponseException e) {
+                Toaster.longToast(e.getErrors().get(0));
+                myProgressDialog.hide();
+            }
+        });
+    }
+    private boolean isValidData(String login, String password, String name, String phonenumber) {
+        if (TextUtils.isEmpty(login) || TextUtils.isEmpty(password) || TextUtils.isEmpty(name) || TextUtils.isEmpty(phonenumber) ) {
+            if (TextUtils.isEmpty(login)) {
+                m_txtId.setError("Please input user name.");
+            }
+            if (TextUtils.isEmpty(password)) {
+                m_txtPassword.setError("Please input user password");
+            }
+            if (TextUtils.isEmpty(name)) {
+                m_txtFullName.setError("Please input user email");
+            }
+            if (TextUtils.isEmpty(phonenumber)) {
+                m_txtMobileNumber.setError("Please input phone number");
+            }
+            return false;
+        }
+        if (mLogoImagePath.isEmpty()){
+            Toaster.shortToast("Please set logo image.");
+            return false;
+        }
+        return true;
+    }
+
+    private void startLoginService(QBUser qbUser) {
+        LogUtil.writeDebugLog(TAG, "startLoginService", "start");
+        Intent tempIntent = new Intent(this, CallService.class);
+        PendingIntent pendingIntent = createPendingResult(Constant.EXTRA_LOGIN_RESULT_CODE, tempIntent, 0);
+        CallService.start(this, qbUser, pendingIntent);
+    }
+    private void saveUserData(QBUser qbUser) {
+        LogUtil.writeDebugLog(TAG, "saveUserData", "start");
+        SharedPrefsHelper sharedPrefsHelper = SharedPrefsHelper.getInstance();
+//        sharedPrefsHelper.save(Constant.PREF_CURREN_ROOM_NAME, qbUser.getTags().get(0));
+        sharedPrefsHelper.saveQbUser(qbUser);
     }
 }
