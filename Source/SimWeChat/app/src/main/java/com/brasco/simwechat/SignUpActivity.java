@@ -44,6 +44,7 @@ import com.quickblox.content.QBContent;
 import com.quickblox.content.model.QBFile;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
+import com.quickblox.core.helper.StringifyArrayList;
 import com.quickblox.users.QBUsers;
 import com.quickblox.users.model.QBUser;
 
@@ -51,6 +52,7 @@ import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 public class SignUpActivity extends IBActivity implements View.OnClickListener {
     private static final String TAG = LogInActivity.class.getSimpleName();
@@ -70,7 +72,7 @@ public class SignUpActivity extends IBActivity implements View.OnClickListener {
     private boolean m_bShowPassword = false;
 
     private CountryPicker m_CountryPicker = null;
-    private QBUser userForSave;
+private QBUser userForSave;
     private MyProgressDialog myProgressDialog;
     QBUser mQBUser;
     private String mLogoImagePath = "";
@@ -231,6 +233,8 @@ public class SignUpActivity extends IBActivity implements View.OnClickListener {
         String password = m_txtPassword.getText().toString();
         String dialCode = m_txtDialCode.getText().toString();
         String phoneNumber = m_txtMobileNumber.getText().toString();
+        //phoneNumber = dialCode + " " + phoneNumber;
+        String country = m_txtCountry.getText().toString();
 
         if (!isValidData(login, password, name, phoneNumber)) {
             return;
@@ -243,6 +247,7 @@ public class SignUpActivity extends IBActivity implements View.OnClickListener {
         mQBUser.setPassword(password);
         mQBUser.setFullName(name);
         mQBUser.setPhone(phoneNumber);
+        mQBUser.setWebsite(country);
         QBUserSingUp(mQBUser);
     }
 

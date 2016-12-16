@@ -25,6 +25,7 @@ public class RecentMessageData {
         LogUtil.writeDebugLog(TAG, "RecentMessageData", "start");
     }
 
+    public String getUserId(){return  mUserId;}
     public String getUsername(){
         return mUsername;
     }

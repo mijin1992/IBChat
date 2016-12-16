@@ -3,7 +3,9 @@ package com.brasco.simwechat;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Typeface;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -25,16 +27,22 @@ import com.brasco.simwechat.quickblox.activity.BaseActivity;
 import com.brasco.simwechat.quickblox.core.gcm.GooglePlayServicesHelper;
 import com.brasco.simwechat.quickblox.core.utils.NotificationUtils;
 import com.brasco.simwechat.quickblox.core.utils.ResourceUtils;
+import com.brasco.simwechat.quickblox.core.utils.SharedPrefsHelper;
+import com.brasco.simwechat.quickblox.core.utils.Toaster;
 import com.brasco.simwechat.quickblox.core.utils.constant.GcmConsts;
 import com.brasco.simwechat.quickblox.db.QbUsersDbManager;
 import com.brasco.simwechat.quickblox.managers.DialogsManager;
 import com.brasco.simwechat.quickblox.managers.QbChatDialogMessageListenerImp;
 import com.brasco.simwechat.quickblox.managers.QbDialogHolder;
+import com.brasco.simwechat.quickblox.services.CallService;
 import com.brasco.simwechat.quickblox.utils.PermissionsChecker;
+import com.brasco.simwechat.quickblox.utils.SharedPreferencesUtil;
 import com.brasco.simwechat.quickblox.utils.WebRtcSessionManager;
 import com.brasco.simwechat.quickblox.utils.chat.ChatHelper;
+import com.brasco.simwechat.quickblox.utils.qb.callback.QbEntityCallbackImpl;
 import com.brasco.simwechat.utils.LogUtil;
 import com.halzhang.android.library.BottomTabIndicator;
+import com.quickblox.chat.QBChatService;
 import com.quickblox.chat.QBIncomingMessagesManager;
 import com.quickblox.chat.QBSystemMessagesManager;
 import com.quickblox.chat.exception.QBChatException;
@@ -47,9 +55,13 @@ import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.request.QBRequestGetBuilder;
 import com.quickblox.users.model.QBUser;
+import com.quickblox.videochat.webrtc.QBRTCClient;
+import com.quickblox.videochat.webrtc.QBRTCSession;
+import com.quickblox.videochat.webrtc.QBRTCTypes;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 
 public class MainActivity extends BaseActivity implements DialogsManager.ManagingDialogsCallbacks{
     public static final String TAG = MainActivity.class.getSimpleName();
@@ -95,6 +107,7 @@ public class MainActivity extends BaseActivity implements DialogsManager.Managin
 
         mPrefs = new AppPreference(this);
         progressDialog = new MyProgressDialog(this, 0);
+        AppGlobals.mainActivity = this;
 
         getUsers();
         setupList();
@@ -195,7 +208,7 @@ public class MainActivity extends BaseActivity implements DialogsManager.Managin
                     QbDialogHolder.getInstance().clear();
                 }
                 QbDialogHolder.getInstance().addDialogs(dialogs);
-//                updateDialogsAdapter();
+                updateDialogsAdapter();
             }
 
             @Override
@@ -217,50 +230,357 @@ public class MainActivity extends BaseActivity implements DialogsManager.Managin
         return ret;
     }
     private UserData getUserDataFromSenderId(Integer senderId){
-//        for(int i=0; i <mAllUserData.size(); i++){
-//            UserData user = mAllUserData.get(i);
-//            Integer id = user.getQBUser().getId();
-//            if (id.equals(senderId)){
-//                return user;
-//            }
-//        }
-//        LogUtil.writeDebugLog(TAG, "getUserDataFromSenderId", "return value is null");
+        for(int i=0; i <AppGlobals.mAllUserData.size(); i++){
+            UserData user = AppGlobals.mAllUserData.get(i);
+            Integer id = user.getQBUser().getId();
+            if (id.equals(senderId)){
+                return user;
+            }
+        }
+        LogUtil.writeDebugLog(TAG, "getUserDataFromSenderId", "return value is null");
         return null;
     }
 
     public void startChatActivity(UserData user){
-        ChatActivity.startForResult(MainActivity.this, REQUEST_DIALOG_ID_FOR_UPDATE, "");
+        if (user != null){
+            AppGlobals.curChattingUser = user;
+            ArrayList<QBUser> newDialog = new ArrayList<QBUser>();
+            newDialog.add(AppGlobals.curChattingUser.getQBUser());
+            newDialog.add(QBData.curQBUser);
+            if (isPrivateDialogExist(newDialog)){
+                LogUtil.writeDebugLog(TAG, "startReceivedActivity", "start ReceivedActivity");
+                newDialog.remove(ChatHelper.getCurrentUser());
+                QBChatDialog existingPrivateDialog = QbDialogHolder.getInstance().getPrivateDialogWithUser(newDialog.get(0));
+                ChatActivity.startForResult(MainActivity.this, REQUEST_DIALOG_ID_FOR_UPDATE, existingPrivateDialog.getDialogId());
+            } else {
+                LogUtil.writeDebugLog(TAG, "startReceivedActivity", "create Dialog");
+                createDialog(newDialog);
+            }
+        }
+    }
+    private boolean isPrivateDialogExist(ArrayList<QBUser> allSelectedUsers){
+        LogUtil.writeDebugLog(TAG, "isPrivateDialogExist", "1");
+        ArrayList<QBUser> selectedUsers = new ArrayList<>();
+        selectedUsers.addAll(allSelectedUsers);
+        selectedUsers.remove(ChatHelper.getCurrentUser());
+        return selectedUsers.size() == 1 && QbDialogHolder.getInstance().hasPrivateDialogWithUser(selectedUsers.get(0));
+    }
+    private void createDialog(final ArrayList<QBUser> selectedUsers) {
+        LogUtil.writeDebugLog(TAG, "createDialog", "start");
+        progressDialog.show();
+        ChatHelper.getInstance().createDialogWithSelectedUsers(selectedUsers,
+                new QBEntityCallback<QBChatDialog>() {
+                    @Override
+                    public void onSuccess(QBChatDialog dialog, Bundle args) {
+                        LogUtil.writeDebugLog(TAG, "createDialog", "onSuccess");
+                        progressDialog.hide();
+                        dialogsManager.sendSystemMessageAboutCreatingDialog(systemMessagesManager, dialog);
+                        LogUtil.writeDebugLog(TAG, "createDialog", "start ReceivedActivity");
+                        ChatActivity.startForResult(MainActivity.this, REQUEST_DIALOG_ID_FOR_UPDATE, dialog.getDialogId());
+                    }
+
+                    @Override
+                    public void onError(QBResponseException e) {
+                        progressDialog.hide();
+                        LogUtil.writeDebugLog(TAG, "createDialog", "start onError");
+                    }
+                }
+        );
+    }
+    public UserData getUserDataFromUserId(String userId){
+        LogUtil.writeDebugLog(TAG, "getUserDataFromUsername", userId);
+        for (int i=0; i< AppGlobals.mAllUserData.size(); i++){
+            UserData user = AppGlobals.mAllUserData.get(i);
+            if (user.getUserId().equals(userId))
+                return user;
+        }
+        return null;
+    }
+    private void loadUpdatedDialog(String dialogId) {
+        LogUtil.writeDebugLog(TAG, "loadUpdatedDialog", "start");
+        ChatHelper.getInstance().getDialogById(dialogId, new QbEntityCallbackImpl<QBChatDialog>() {
+            @Override
+            public void onSuccess(QBChatDialog result, Bundle bundle) {
+                LogUtil.writeDebugLog(TAG, "loadUpdatedDialog", "onSuccess");
+                QbDialogHolder.getInstance().addDialog(result);
+            }
+
+            @Override
+            public void onError(QBResponseException e) {
+                LogUtil.writeDebugLog(TAG, "loadUpdatedDialog", "onError");
+            }
+        });
+    }
+    private void userLogout() {
+        LogUtil.writeDebugLog(TAG, "userLogout", "start");
+        ChatHelper.getInstance().logout(new QBEntityCallback<Void>() {
+            @Override
+            public void onSuccess(Void aVoid, Bundle bundle) {
+                LogUtil.writeDebugLog(TAG, "userLogout", "onSuccess");
+                if (googlePlayServicesHelper.checkPlayServicesAvailable()) {
+                    googlePlayServicesHelper.unregisterFromGcm(Constant.GCM_SENDER_ID);
+                }
+                SharedPreferencesUtil.removeQbUser();
+                QbDialogHolder.getInstance().clear();
+                finish();
+            }
+
+            @Override
+            public void onError(QBResponseException e) {
+                LogUtil.writeDebugLog(TAG, "userLogout", "onError");
+                reconnectToChatLogout(SharedPreferencesUtil.getQbUser());
+            }
+        });
+    }
+    private void reconnectToChatLogout(final QBUser user) {
+        LogUtil.writeDebugLog(TAG, "reconnectToChatLogout", "start");
+        ChatHelper.getInstance().login(user, new QBEntityCallback<Void>() {
+            @Override
+            public void onSuccess(Void result, Bundle bundle) {
+                LogUtil.writeDebugLog(TAG, "reconnectToChatLogout", "onSuccess");
+                userLogout();
+            }
+
+            @Override
+            public void onError(QBResponseException e) {
+                LogUtil.writeDebugLog(TAG, "reconnectToChatLogout", "onError");
+                invalidateOptionsMenu();
+                reconnectToChatLogout(SharedPreferencesUtil.getQbUser());
+            }
+        });
+    }
+    private void updateDialogsList() {
+        LogUtil.writeDebugLog(TAG, "updateDialogsList", "1");
+        if (isAppSessionActive) {
+            loadDialogsFromQb(true, true);
+        }
+    }
+    private void registerQbChatListeners() {
+        LogUtil.writeDebugLog(TAG, "registerQbChatListeners", "1");
+        incomingMessagesManager = QBChatService.getInstance().getIncomingMessagesManager();
+        systemMessagesManager = QBChatService.getInstance().getSystemMessagesManager();
+
+        if (incomingMessagesManager != null) {
+            incomingMessagesManager.addDialogMessageListener(allDialogsMessagesListener != null
+                    ? allDialogsMessagesListener : new AllDialogsMessageListener());
+        }
+
+        if (systemMessagesManager != null) {
+            systemMessagesManager.addSystemMessageListener(systemMessagesListener != null
+                    ? systemMessagesListener : new SystemMessagesListener());
+        }
+
+        dialogsManager.addManagingDialogsCallbackListener(this);
+    }
+    private void unregisterQbChatListeners() {
+        LogUtil.writeDebugLog(TAG, "unregisterQbChatListeners", "1");
+        if (incomingMessagesManager != null) {
+            incomingMessagesManager.removeDialogMessageListrener(allDialogsMessagesListener);
+        }
+        if (systemMessagesManager != null) {
+            systemMessagesManager.removeSystemMessageListener(systemMessagesListener);
+        }
+        dialogsManager.removeManagingDialogsCallbackListener(this);
+    }
+    public void updateDialogsAdapter() {
+        LogUtil.writeDebugLog(TAG, "updateDialogsAdapter", "1");
+
+    }
+    private void deleteSelectedDialogs(Collection<QBChatDialog> selectedDialogs) {
+        ChatHelper.getInstance().deleteDialogs(selectedDialogs, new QBEntityCallback<ArrayList<String>>() {
+            @Override
+            public void onSuccess(ArrayList<String> dialogsIds, Bundle bundle) {
+                QbDialogHolder.getInstance().deleteDialogs(dialogsIds);
+                updateDialogsAdapter();
+            }
+            @Override
+            public void onError(QBResponseException e) { }
+        });
+    }
+    private void startLoadUsers() {
+        String currentRoomName = SharedPrefsHelper.getInstance().get(Constant.PREF_CURREN_ROOM_NAME);
+        requestExecutor.loadUsersByTag(currentRoomName, new QBEntityCallback<ArrayList<QBUser>>() {
+            @Override
+            public void onSuccess(ArrayList<QBUser> result, Bundle params) {
+                dbManager.saveAllUsers(result, true);
+                initUsersList();
+            }
+
+            @Override
+            public void onError(QBResponseException responseException) {
+            }
+        });
+    }
+    private boolean isCurrentOpponentsListActual(ArrayList<QBUser> actualCurrentOpponentsList) {
+        LogUtil.writeDebugLog(TAG, "isCurrentOpponentsListActual", "start");
+        boolean equalActual = actualCurrentOpponentsList.retainAll(currentOpponentsList);
+        boolean equalCurrent = currentOpponentsList.retainAll(actualCurrentOpponentsList);
+        return !equalActual && !equalCurrent;
+    }
+    private void addRecentMessage(String dialogId, QBChatMessage qbChatMessage, Integer senderId){
+        if(qbChatMessage.getBody() != null && !qbChatMessage.getBody().isEmpty()) {
+            String userId = null;
+            String userName = null;
+            String logoUrl = null;
+            for (int i = 0; i < AppGlobals.mAllUserData.size(); i++){
+                QBUser user = AppGlobals.mAllUserData.get(i).getQBUser();
+                Integer id = user.getId();
+                if (id.equals(senderId)){
+                    userId = user.getLogin();
+                    userName = user.getFullName();
+                    logoUrl = user.getCustomData();
+                    break;
+                }
+            }
+            if (userId != null) {
+                String message = qbChatMessage.getBody();
+                Date date = new Date();
+                long time = date.getTime();
+                boolean isExist = false;
+                String notificationMessage = "";
+                for (int i = 0; i < AppGlobals.mRecentessageArray.size(); i++) {
+                    RecentMessageData data = AppGlobals.mRecentessageArray.get(i);
+                    if (data.getUserId().equals(userId)) {
+                        data.setMessage(message);
+                        data.setTime(time);
+                        AppGlobals.mRecentessageArray.remove(i);
+                        AppGlobals.mRecentessageArray.add(0, data);
+                        notificationMessage = userName + ": " +message;
+                        isExist = true;
+                        break;
+                    }
+                }
+                if (isExist == false){
+                    LogUtil.writeDebugLog(TAG, "addReceivedMessage", "5");
+                    RecentMessageData receivedMessage = new RecentMessageData(userId, userName, message, time, logoUrl);
+                    AppGlobals.mRecentessageArray.add(0, receivedMessage);
+
+                    notificationMessage = userName + " sent new message to you.";
+
+                }
+//                if (mPrefs.getNotifications() && mPrefs.getNotificationMessageReceived())
+//                    NotificationUtils.showNotification(getApplicationContext(), MainActivity.class,
+//                            ResourceUtils.getString(R.string.notification_title), notificationMessage,
+//                            R.drawable.ic_launcher, 1);
+
+                updateDialogsAdapter();
+            }
+        }
+    }
+    private void initUsersList() {
+        LogUtil.writeDebugLog(TAG, "initUsersList", "1");
+        if (currentOpponentsList != null) {
+            ArrayList<QBUser> actualCurrentOpponentsList = dbManager.getAllUsers();
+            actualCurrentOpponentsList.remove(sharedPrefsHelper.getQbUser());
+            if (isCurrentOpponentsListActual(actualCurrentOpponentsList)) {
+                return;
+            }
+        }
+        proceedInitUsersList();
+    }
+    private void proceedInitUsersList() {
+        LogUtil.writeDebugLog(TAG, "proceedInitUsersList", "1");
+        currentOpponentsList = dbManager.getAllUsers();
+        currentOpponentsList.remove(sharedPrefsHelper.getQbUser());
+    }
+    private boolean isLoggedInChat() {
+        LogUtil.writeDebugLog(TAG, "isLoggedInChat", "1");
+        if (!QBChatService.getInstance().isLoggedIn()) {
+            Toaster.shortToast(R.string.dlg_signal_error);
+            tryReLoginToChat();
+            return false;
+        }
+        return true;
+    }
+    private void tryReLoginToChat() {
+        LogUtil.writeDebugLog(TAG, "tryReLoginToChat", "1");
+        if (sharedPrefsHelper.hasQbUser()) {
+            QBUser qbUser = sharedPrefsHelper.getQbUser();
+            CallService.start(this, qbUser);
+        }
+    }
+    public void startCall(boolean isVideoCall) {
+        LogUtil.writeDebugLog(TAG, "startCall", "start");
+        if (isLoggedInChat()) {
+            LogUtil.writeDebugLog(TAG, "startCall", "ok");
+            QBUser user = AppGlobals.curChattingUser.getQBUser();
+            Integer userId = user.getId();
+            ArrayList<Integer> opponentsList = new ArrayList<Integer>();
+            opponentsList.add(userId);
+            QBRTCTypes.QBConferenceType conferenceType = QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_VIDEO;
+            QBRTCClient qbrtcClient = QBRTCClient.getInstance(getApplicationContext());
+            QBRTCSession newQbRtcSession = qbrtcClient.createNewSessionWithOpponents(opponentsList, conferenceType);
+            WebRtcSessionManager.getInstance(this).setCurrentSession(newQbRtcSession);
+
+//        PushNotificationSender.sendPushMessage(opponentsList, currentUser.getFullName());
+        }
+    }
+    @Override
+    protected void onResume() {
+        LogUtil.writeDebugLog(TAG, "onResume", "1");
+        super.onResume();
+        googlePlayServicesHelper.checkPlayServicesAvailable(this);
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(pushBroadcastReceiver,
+                new IntentFilter(GcmConsts.ACTION_NEW_GCM_EVENT));
+        initUsersList();
+    }
+    @Override
+    protected void onPause() {
+        super.onPause();
+        LogUtil.writeDebugLog(TAG, "onPause", "1");
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(pushBroadcastReceiver);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data){
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
     protected void onDestroy() {
         overridePendingTransition(R.anim.activity_leave, R.anim.activity_enter);
         super.onDestroy();
+        if (isAppSessionActive) {
+            unregisterQbChatListeners();
+        }
     }
 
     @Override
     protected View getSnackbarAnchorView() {
-        return null;
+        return findViewById(R.id.layout_root);
     }
 
     @Override
     public void onSessionCreated(boolean success) {
+        LogUtil.writeDebugLog(TAG, "onSessionCreated", "1");
+        if (success) {
+            QBUser currentUser = ChatHelper.getCurrentUser();
+            if (currentUser != null) {
 
+            }
+            registerQbChatListeners();
+            if (QbDialogHolder.getInstance().getDialogs().size() > 0) {
+                loadDialogsFromQb(true, true);
+            } else {
+                loadDialogsFromQb(false, true);
+            }
+        }
     }
 
     @Override
     public void onDialogCreated(QBChatDialog chatDialog) {
-
+        updateDialogsAdapter();
     }
 
     @Override
     public void onDialogUpdated(String chatDialog) {
-
+        updateDialogsAdapter();
     }
 
     @Override
     public void onNewDialogLoaded(QBChatDialog chatDialog) {
-
+        updateDialogsAdapter();
     }
     private class PushBroadcastReceiver extends BroadcastReceiver {
         @Override

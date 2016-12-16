@@ -101,13 +101,6 @@ public class ContactListAdapter extends ArrayAdapter<UserData>{
 		// set row items here
 		populateDataForRow(parentView, item, position);
 
-		parentView.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View view) {
-				mActivity.startChatActivity(null);
-			}
-		});
-		
 		return parentView;
 		
 	}

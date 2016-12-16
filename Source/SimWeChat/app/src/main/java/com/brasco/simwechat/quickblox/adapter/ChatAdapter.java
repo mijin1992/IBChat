@@ -8,6 +8,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.brasco.simwechat.ChatActivity;
 import com.brasco.simwechat.utils.LogUtil;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
@@ -41,14 +42,12 @@ public class ChatAdapter extends BaseListAdapter<QBChatMessage> implements Stick
     private final QBChatDialog chatDialog;
     private PaginationHistoryListener paginationListener;
     private int previousGetCount = 0;
-//    private ReceivedActivity mActivity;
-    private int countOfVideo;
+    private ChatActivity mActivity;
 
-    public ChatAdapter(Context context, QBChatDialog chatDialog, List<QBChatMessage> chatMessages, int videoCount) {
+    public ChatAdapter(Context context, QBChatDialog chatDialog, List<QBChatMessage> chatMessages) {
         super(context, chatMessages);
-//        mActivity = (ReceivedActivity) context;
+        mActivity = (ChatActivity) context;
         this.chatDialog = chatDialog;
-        countOfVideo = videoCount;
         LogUtil.writeDebugLog(TAG, "ChatAdapter", "1");
     }
 
@@ -58,7 +57,6 @@ public class ChatAdapter extends BaseListAdapter<QBChatMessage> implements Stick
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-        LogUtil.writeDebugLog(TAG, "getView", "1");
         final QBChatMessage chatMessage = getItem(position);
         Boolean isAttachedFile = hasAttachments(chatMessage);
         String type = "";
@@ -68,7 +66,6 @@ public class ChatAdapter extends BaseListAdapter<QBChatMessage> implements Stick
         holder = new ViewHolder();
 
         if (isAttachedFile && type.equals(QBAttachment.PHOTO_TYPE)){
-            LogUtil.writeDebugLog(TAG, "getView", "2");
 //            convertView = inflater.inflate(R.layout.cell_chat_list_video, parent, false);
 //            holder.videoTime = (TextView) convertView.findViewById(R.id.lbl_time_ago);
 //            holder.attachmentImageView = (ImageView) convertView.findViewById(R.id.image_attached_file);

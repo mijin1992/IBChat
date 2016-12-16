@@ -8,7 +8,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.brasco.simwechat.app.AppGlobals;
+import com.brasco.simwechat.model.UserData;
+import com.brasco.simwechat.utils.LogUtil;
 import com.brasco.simwechat.utils.Utils;
+import com.quickblox.core.helper.StringifyArrayList;
+
+import java.util.List;
 
 public class ContactProfileActivity extends IBActivity implements View.OnClickListener {
 
@@ -23,6 +29,8 @@ public class ContactProfileActivity extends IBActivity implements View.OnClickLi
     private TextView m_txtWhatsup = null;
     private Button m_btnMessage = null;
     private Button m_btnCall = null;
+
+    private UserData m_curUser = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +54,7 @@ public class ContactProfileActivity extends IBActivity implements View.OnClickLi
         m_btnCall.setOnClickListener(this);
 
         ActionBar("Profile");
+         initUI();
     }
 
     @Override
@@ -63,11 +72,31 @@ public class ContactProfileActivity extends IBActivity implements View.OnClickLi
     }
 
     private void sendMessage() {
-        Intent intent = new Intent(ContactProfileActivity.this, ChatActivity.class);
-        startActivity(intent);
+        AppGlobals.mainActivity.startChatActivity(m_curUser);
     }
 
     private void freeCall() {
 
+    }
+
+    public UserData getUserDataFromUsername(String userId){
+        for (int i=0; i< AppGlobals.mAllUserData.size(); i++){
+            UserData user = AppGlobals.mAllUserData.get(i);
+            if (user.getUserId().equals(userId))
+                return user;
+        }
+        return null;
+    }
+    private void initUI(){
+        m_curUser = getUserDataFromUsername(m_ContactUserId);
+        if (m_curUser != null){
+            m_txtProfileName.setText(m_curUser.getFullName());
+            m_txtProfileId.setText(m_curUser.getUserId());
+            String country = m_curUser.getQBUser().getWebsite();
+            if (country != null) {
+                country = country.substring(country.indexOf("//") + 2);
+                m_txtRegion.setText(country);
+            }
+        }
     }
 }

@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.brasco.simwechat.app.AppGlobals;
 import com.brasco.simwechat.app.AppPreference;
 import com.brasco.simwechat.app.Constant;
 import com.brasco.simwechat.dialog.MyProgressDialog;
@@ -111,6 +112,7 @@ public class LogInActivity extends IBActivity implements View.OnClickListener {
         progressDialog = new MyProgressDialog(this, 0);
         progressDialog.show();
         createSession();
+        AppGlobals.mRecentessageArray = mPrefs.getRecentMessagesArray();
     }
 
     @Override
@@ -176,12 +178,12 @@ public class LogInActivity extends IBActivity implements View.OnClickListener {
         if (!isValidData(login, password)) {
             return;
         }
-        progressDialog.show();
         mQBUser = getQBUserFromUsername(m_txtUserId.getText().toString());
         if (mQBUser == null){
             Toaster.longToast("Invalid user....");
             return;
         }
+        progressDialog.show();
         mQBUser.setPassword(m_txtPassword.getText().toString());
         LogUtil.writeDebugLog(TAG, "signIn", "startLoginService");
         startLoginService(mQBUser);
