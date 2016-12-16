@@ -152,7 +152,7 @@ public class ChatAdapter extends BaseListAdapter<QBChatMessage> implements Stick
             type = getAttachmentsType(chatMessage);
 
         boolean isIncoming = isIncoming(chatMessage);
-        if (hasAttachments && type.equals(QBAttachment.PHOTO_TYPE)) {
+        if (hasAttachments && type.equals(QBAttachment.AUDIO_TYPE)) {
             Collection<QBAttachment> attachments = chatMessage.getAttachments();
             QBAttachment attachment = attachments.iterator().next();
             Integer id = Integer.parseInt(attachment.getId());

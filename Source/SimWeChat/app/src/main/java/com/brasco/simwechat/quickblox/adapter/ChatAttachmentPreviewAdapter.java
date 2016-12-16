@@ -52,16 +52,16 @@ public class ChatAttachmentPreviewAdapter extends BaseListAdapter<File> {
         ChatHelper.getInstance().loadFileAsAttachment(item, new QBEntityCallback<QBAttachment>() {
             @Override
             public void onSuccess(QBAttachment result, Bundle params) {
-//                mActivity.hideProgressDialog();
+                mActivity.hideProgressDialog();
                 fileUploadProgressMap.remove(item);
                 fileQBAttachmentMap.put(item, result);
-//                mActivity.sendAttachedFile();
+                mActivity.sendAttachedFile();
                 notifyDataSetChanged();
             }
 
             @Override
             public void onError(QBResponseException e) {
-//                mActivity.hideProgressDialog();
+                mActivity.hideProgressDialog();
                 onAttachmentUploadErrorListener.onAttachmentUploadError(e);
                 remove(item);
             }
@@ -76,7 +76,7 @@ public class ChatAttachmentPreviewAdapter extends BaseListAdapter<File> {
                     }
                 });
             }
-        }, QBAttachment.PHOTO_TYPE);
+        }, QBAttachment.AUDIO_TYPE);
 
         super.add(item);
         onAttachmentCountChangedListener.onAttachmentCountChanged(getCount());

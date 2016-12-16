@@ -44,7 +44,8 @@
         <activity
             android:name=".LogInActivity"
             android:exported="true"
-            android:windowSoftInputMode="adjustPan">
+            android:windowSoftInputMode="adjustPan"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -54,14 +55,20 @@
         <activity
             android:name=".SignUpActivity"
             android:theme="@style/AppTheme"
-            android:windowSoftInputMode="adjustPan" />
-        <activity android:name=".MainActivity" />
+            android:windowSoftInputMode="adjustPan"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".MainActivity"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".ChatActivity"
-            android:windowSoftInputMode="adjustPan" />
-        <activity android:name=".ProfileActivity" />
-        <activity android:name=".PostActivity" />
-        <activity android:name=".MomentActivity" />
+            android:windowSoftInputMode="adjustPan"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".ProfileActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".PostActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".MomentActivity"
+            android:screenOrientation="portrait"/>
 
         <service android:name=".quickblox.services.CallService" />
 
@@ -96,10 +103,14 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
-        <activity android:name=".ContactProfileActivity" />
-        <activity android:name=".CallActivity"></activity>
-        <activity android:name=".CameraActivity" />
-        <activity android:name=".SelectVideoActivity"/>
+        <activity android:name=".ContactProfileActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".quickblox.activity.CallActivity"
+            android:screenOrientation="portrait"></activity>
+        <activity android:name=".CameraActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".SelectVideoActivity"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

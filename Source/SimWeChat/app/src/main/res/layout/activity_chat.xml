@@ -14,7 +14,7 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:scrollbars="vertical"/>
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/chat_input"
         android:layout_width="match_parent"
         android:layout_height="65dp"
@@ -28,17 +28,22 @@
             android:layout_height="35dp"
             android:layout_gravity="center_vertical"
             android:layout_marginRight="10dp"
-            android:src="@drawable/button_audio"
+            android:src="@drawable/ic_audio_btn"
             android:scaleType="fitXY"
             android:padding="0dp"
-            android:layout_weight="0"/>
+            android:layout_weight="0"
+            android:layout_centerVertical="true"/>
         <EditText
             android:id="@+id/txt_chat"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_weight="1"
-            android:background="@null"/>
+            android:background="@null"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@+id/button_record_audio"
+            android:layout_toLeftOf="@+id/button_emoji"
+            android:layout_toStartOf="@+id/button_emoji" />
         <ImageButton
             android:id="@+id/button_emoji"
             android:layout_width="30dp"
@@ -48,7 +53,10 @@
             android:src="@drawable/button_emoticon"
             android:scaleType="fitXY"
             android:padding="0dp"
-            android:background="@android:color/transparent"/>
+            android:background="@android:color/transparent"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/button_send"
+            android:layout_toStartOf="@+id/button_send" />
         <ImageButton
             android:id="@+id/button_send"
             android:layout_width="35dp"
@@ -58,8 +66,22 @@
             android:src="@drawable/button_send"
             android:scaleType="fitXY"
             android:padding="0dp"
-            android:background="@null"/>
-    </LinearLayout>
+            android:background="@null"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"/>
+        <TextView
+            android:id="@+id/btn_to_talk"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Hold to Talk"
+            android:textSize="18sp"
+            android:gravity="center"
+            android:layout_toRightOf="@+id/button_record_audio"
+            android:layout_toEndOf="@+id/button_record_audio"
+            android:layout_alignTop="@+id/button_send"
+            android:layout_alignBottom="@+id/button_send"
+            android:background="@drawable/bg_hold_to_talk"/>
+    </RelativeLayout>
     <FrameLayout
         android:id="@+id/emojicons"
         android:layout_width="match_parent"

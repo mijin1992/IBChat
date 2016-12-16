@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <color name="ball1">#11DD11</color>
+  <color name="ball2">#FF4B4A</color>
+  <color name="ball3">#3D8EFF</color>
+
+  <integer-array name="colors">
+    <item>@color/ball1</item>
+    <item>@color/ball2</item>
+    <item>@color/ball3</item>
+  </integer-array>
+
+  <string-array name="videoResolutions">
+    <item>Default</item>
+    <item>HD (1280 x 720)</item>
+    <item>VGA (640 x 480)</item>
+    <item>QVGA (320 x 240)</item>
+  </string-array>
+
+  <string-array name="videoResolutionsValues">
+    <item>-1</item>
+    <item>0</item>
+    <item>1</item>
+    <item>2</item>
+  </string-array>
+
+  <string-array name="audioCodecs">
+    <item>ISAC</item>
+    <item>opus</item>
+  </string-array>
+
+  <string-array name="videoCodecs">
+    <item>VP8</item>
+    <item>VP9</item>
+    <item>H264</item>
+  </string-array>
+
+  <string-array name="videoCodecsValues">
+    <item>0</item>
+    <item>1</item>
+    <item>2</item>
+  </string-array>
+
+</resources>

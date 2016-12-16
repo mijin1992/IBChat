@@ -612,24 +612,7 @@ public class MainActivity extends BaseActivity implements DialogsManager.Managin
             LogUtil.writeDebugLog(TAG, "AllDialogsMessageListener", "processMessage");
             if (!senderId.equals(ChatHelper.getCurrentUser().getId())) {
                 dialogsManager.onGlobalMessageReceived(dialogId, qbChatMessage);
-//                addReceivedMessage(dialogId, qbChatMessage, senderId);
-
-                Boolean hasAttachments = hasAttachments(qbChatMessage);
-                String type = "";
-                if (hasAttachments) {
-                    LogUtil.writeDebugLog(TAG, "AllDialogsMessageListener", "processMessage:  has attachment");
-                    type = getAttachmentsType(qbChatMessage);
-                    if (type.equals(QBAttachment.PHOTO_TYPE)) {
-                        Collection<QBAttachment> attachments = qbChatMessage.getAttachments();
-                        QBAttachment attachment = attachments.iterator().next();
-                        String url = attachment.getUrl();
-                        UserData user = getUserDataFromSenderId(senderId);
-                        if (user != null) {
-//                            setImageFilePathForReceived(url, user);
-//                            updateDialogsAdapter();
-                        }
-                    }
-                }
+                addRecentMessage(dialogId, qbChatMessage, senderId);
             }
         }
     }

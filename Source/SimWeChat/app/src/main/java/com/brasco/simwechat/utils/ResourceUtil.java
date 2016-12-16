@@ -26,7 +26,7 @@ import com.brasco.simwechat.model.MediaModel;
 public class ResourceUtil {
     public static final String TAG = "ResourceUtil";
 
-    public static String RES_DIRECTORY = Environment.getExternalStorageDirectory() + "/Bombo/";
+    public static String RES_DIRECTORY = Environment.getExternalStorageDirectory() + "/SimWeChat/";
     public static String FILE_EXTENSION = ".veew";
 
     /*
@@ -108,6 +108,7 @@ public class ResourceUtil {
 
     // video
     private static String mVideoFileExtension = "mp4";
+    private static String mAudioFileExtension = "mp3";
     public static void setVideoExtension(String fileExtension) {
         mVideoFileExtension = fileExtension;
     }
@@ -120,6 +121,12 @@ public class ResourceUtil {
         Date date = new Date();
         String partname = String.valueOf(date.getTime());
         return getResourceDirectory() + "video_" + partname + "." + mVideoFileExtension;
+    }
+
+    public static String getCaptureAudioFilePath(Context context) {
+        Date date = new Date();
+        String partname = String.valueOf(date.getTime());
+        return getResourceDirectory() + "audio_message_" + partname + "." + mAudioFileExtension;
     }
 
     public static String getTrimedVideoFilePath(Context context) {

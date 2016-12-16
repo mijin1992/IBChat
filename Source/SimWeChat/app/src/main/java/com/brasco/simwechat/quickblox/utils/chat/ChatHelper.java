@@ -289,7 +289,7 @@ public class ChatHelper {
     }
 
     public void loadFileAsAttachment(File file, QBEntityCallback<QBAttachment> callback) {
-        loadFileAsAttachment(file, callback, null, QBAttachment.PHOTO_TYPE);//, QBAttachment.PHOTO_TYPE);
+        loadFileAsAttachment(file, callback, null, QBAttachment.AUDIO_TYPE);//, QBAttachment.PHOTO_TYPE);
     }
 
     public void loadFileAsAttachment(File file, QBEntityCallback<QBAttachment> callback,

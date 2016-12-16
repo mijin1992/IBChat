@@ -3,6 +3,7 @@ package com.brasco.simwechat.quickblox.utils;
 import android.content.Context;
 import android.util.Log;
 
+import com.brasco.simwechat.ContactProfileActivity;
 import com.brasco.simwechat.utils.LogUtil;
 import com.brasco.simwechat.quickblox.QBData;
 import com.quickblox.users.model.QBUser;
@@ -47,9 +48,8 @@ public class WebRtcSessionManager extends QBRTCClientSessionCallbacksImpl {
 
     @Override
     public void onReceiveNewSession(QBRTCSession session) {
-        Log.d(TAG, "onReceiveNewSession to WebRtcSessionManager");
         LogUtil.writeDebugLog(TAG, "onReceiveNewSession", "onReceiveNewSession to WebRtcSessionManager");
-        //if (currentSession == null)
+        if (currentSession == null)
         {
             setCurrentSession(session);
             Integer senderId = session.getCallerID();
@@ -64,18 +64,7 @@ public class WebRtcSessionManager extends QBRTCClientSessionCallbacksImpl {
                 }
             }
             if (otherUsername != null) {
-//                for (int i = 0; i < AppGlobals.receivedMessageData.size(); i++) {
-//                    RecentMessageData data = AppGlobals.receivedMessageData.get(i);
-//                    if (data.getUsername().equals(otherUsername)) {
-//                        String imageFilePath = data.getLastImageFilePath();
-//                        LogUtil.writeDebugLog(TAG, "onReceiveNewSession", imageFilePath);
-//                        if (imageFilePath != null && !imageFilePath.isEmpty()){
-//                            LogUtil.writeDebugLog(TAG, "onReceiveNewSession", "2");
-//                            VideoViewActivity.startForResult(AppGlobals.mainActivity, MainActivity.REQUEST_DIALOG_ID_FOR_UPDATE, imageFilePath);
-//                        }
-//                        break;
-//                    }
-//                }
+                ContactProfileActivity.start(context, true, otherUsername);
             }
         }
     }

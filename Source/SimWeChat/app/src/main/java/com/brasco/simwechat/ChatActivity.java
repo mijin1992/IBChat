@@ -3,6 +3,7 @@ package com.brasco.simwechat;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.PersistableBundle;
@@ -11,6 +12,7 @@ import android.support.v7.widget.ListViewCompat;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -34,7 +36,9 @@ import com.brasco.simwechat.quickblox.managers.QbDialogHolder;
 import com.brasco.simwechat.quickblox.utils.chat.ChatHelper;
 import com.brasco.simwechat.quickblox.utils.qb.PaginationHistoryListener;
 import com.brasco.simwechat.quickblox.utils.qb.VerboseQbChatConnectionListener;
+import com.brasco.simwechat.utils.AudioRecorder;
 import com.brasco.simwechat.utils.LogUtil;
+import com.brasco.simwechat.utils.ResourceUtil;
 import com.quickblox.chat.model.QBAttachment;
 import com.quickblox.chat.model.QBChatDialog;
 import com.quickblox.chat.model.QBChatMessage;
@@ -46,8 +50,10 @@ import com.quickblox.users.model.QBUser;
 import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.chat.ChatMessageListener;
+import org.jivesoftware.smackx.xdatalayout.packet.DataLayout;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -82,12 +88,16 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener
     private ImageButton m_btnSend = null;
     private FrameLayout m_emojiconLayout;
     private ListView m_chatListView;
+    private TextView m_btnToTalk;
+
     private boolean m_bEmojiKeyboard = false;
     private String mReceivedImagePath = "";
     private String sendFilePath;
     private MyProgressDialog progressDialog;
     private AppPreference mPrefs;
     private ChatActivity instance;
+    private boolean isAudioInputType;
+    private AudioRecorder m_audioRecorder;
 
 
     public static void startForResult(Activity activity, int code, String dialogId) {
@@ -114,6 +124,33 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener
         m_btnEmoji = (ImageButton) findViewById(R.id.button_emoji);
         m_btnSend = (ImageButton) findViewById(R.id.button_send);
         m_chatListView = (ListView) findViewById(R.id.list_chat_view);
+        m_btnToTalk = (TextView) findViewById(R.id.btn_to_talk);
+        m_btnToTalk.setOnTouchListener(new View.OnTouchListener() {
+            public boolean onTouch(View view, MotionEvent event) {
+                if (event.getAction() == android.view.MotionEvent.ACTION_DOWN) {
+                    m_btnToTalk.setBackgroundResource(R.drawable.bg_hold_to_talk_pressed);
+                    String fileName = ResourceUtil.getCaptureAudioFilePath(instance);
+                    m_audioRecorder = new AudioRecorder();
+                    try {
+                        m_audioRecorder.startRecording(fileName);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } else if (event.getAction() == android.view.MotionEvent.ACTION_UP) {
+                    m_btnToTalk.setBackgroundResource(R.drawable.bg_hold_to_talk_default);
+                    try {
+                        m_audioRecorder.stop();
+                        File audioMessage = new File(m_audioRecorder.getOutfilePath());
+                        attachmentPreviewAdapter.add(audioMessage);
+                        progressDialog.show();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                return true;
+            }
+        });
+        m_btnToTalk.setOnClickListener(this);
         m_txtMessage.setOnClickListener(this);
         m_btnAudio.setOnClickListener(this);
         m_btnEmoji.setOnClickListener(this);
@@ -169,7 +206,11 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
+            case R.id.btn_to_talk:
+                break;
             case R.id.button_record_audio:
+                isAudioInputType = !isAudioInputType;
+                setAudioMessage();
                 break;
             case R.id.txt_chat:
                 showEmojiconFragment(false);
@@ -188,6 +229,7 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener
                 }
                 break;
             case R.id.button_send:
+                onSendChatClick();
                 break;
         }
     }
@@ -246,6 +288,32 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener
                     public void onAttachmentUploadError(QBResponseException e) {
                     }
                 });
+
+        isAudioInputType = true;
+        setAudioMessage();
+    }
+    private void setAudioMessage(){
+        if (isAudioInputType){
+            m_btnAudio.setImageResource(R.drawable.ic_key);
+            m_txtMessage.setEnabled(false);
+            m_txtMessage.setVisibility(View.INVISIBLE);
+            m_btnEmoji.setEnabled(false);
+            m_btnEmoji.setVisibility(View.INVISIBLE);
+            m_btnSend.setEnabled(false);
+            m_btnSend.setVisibility(View.INVISIBLE);
+            m_btnToTalk.setEnabled(true);
+            m_btnToTalk.setVisibility(View.VISIBLE);
+        } else {
+            m_btnAudio.setImageResource(R.drawable.ic_audio_btn);
+            m_txtMessage.setEnabled(true);
+            m_txtMessage.setVisibility(View.VISIBLE);
+            m_btnEmoji.setEnabled(true);
+            m_btnEmoji.setVisibility(View.VISIBLE);
+            m_btnSend.setEnabled(true);
+            m_btnSend.setVisibility(View.VISIBLE);
+            m_btnToTalk.setEnabled(false);
+            m_btnToTalk.setVisibility(View.INVISIBLE);
+        }
     }
 
     private void sendChatMessage(String text, QBAttachment attachment) {
@@ -362,18 +430,6 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener
             public void onSuccess(ArrayList<QBChatMessage> messages, Bundle args) {
                 LogUtil.writeDebugLog(TAG, "loadChatHistory", "onSuccess");
                 progressDialog.hide();
-                // The newest messages should be in the end of list,
-                // so we need to reverse list to show messages in the right order
-                for (int i=messages.size()-1; i >=0; i--){
-                    if (messages.get(i).getBody() != null) {
-                        if (messages.get(i).getBody().equals(Constant.SEND_VIDEO_VIEW_REQUEST)
-                                || messages.get(i).getBody().equals(Constant.SEND_VIDEO_SHOW_END)
-                                || messages.get(i).getBody().equals(Constant.SEND_VIDEO_SHOW_START)
-                                ) {
-                            messages.remove(i);
-                        }
-                    }
-                }
                 Collections.reverse(messages);
                 if (chatAdapter == null) {
                     chatAdapter = new ChatAdapter(ChatActivity.this, qbChatDialog, messages);
@@ -494,7 +550,7 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener
         progressDialog.show();
     }
     public void sendAttachedFile(){
-        onSendChatClick();
+        //onSendChatClick();
     }
     private void inserRecentMessagesArray(QBChatMessage chatMessage, QBChatDialog dialog ){
         LogUtil.writeDebugLog(TAG, "insertSentMessagesArray", "1");
