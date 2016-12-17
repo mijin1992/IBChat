@@ -10,6 +10,7 @@
     <color name="buttonTextColor1">#ffffff</color>
     <color name="buttonTextColor2">#303136</color>
     <color name="hintColor">#c0c0c0</color>
+    <color name="momentNameColor">#697ba0</color>
 
     <!-- Screen Color -->
     <color name="chatBackground">#ebebeb</color>
@@ -118,4 +119,5 @@
 
     <color name="background_chat_color">#f5f6f5</color>
     <color name="selected_list_item_color">#e0e0e0</color>
+    <color name="moment_title_color">#434343</color>
 </resources>
