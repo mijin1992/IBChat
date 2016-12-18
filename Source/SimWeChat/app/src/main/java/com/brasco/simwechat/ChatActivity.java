@@ -550,7 +550,7 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener
         progressDialog.show();
     }
     public void sendAttachedFile(){
-        //onSendChatClick();
+        onSendChatClick();
     }
     private void inserRecentMessagesArray(QBChatMessage chatMessage, QBChatDialog dialog ){
         LogUtil.writeDebugLog(TAG, "insertSentMessagesArray", "1");

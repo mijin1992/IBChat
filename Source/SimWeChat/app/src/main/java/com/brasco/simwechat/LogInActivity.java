@@ -264,10 +264,12 @@ public class LogInActivity extends IBActivity implements View.OnClickListener {
 
     public QBUser getQBUserFromUsername(String username){
         LogUtil.writeDebugLog(TAG, "getQBUserFromUsername", username);
-        for (int i=0; i< QBData.qbUsers.size(); i++){
-            QBUser user = QBData.qbUsers.get(i);
-            if (user.getLogin().equals(username))
-                return user;
+        if(QBData.qbUsers != null) {
+            for (int i = 0; i < QBData.qbUsers.size(); i++) {
+                QBUser user = QBData.qbUsers.get(i);
+                if (user.getLogin().equals(username))
+                    return user;
+            }
         }
         return null;
     }

@@ -199,7 +199,9 @@ public class AppPreference {
                     }
                 }
                 RecentMessageData data = new RecentMessageData(strUserIdIndexes[i], username, message, time, "");
-                data.setUnreadMessages(Integer.getInteger(strUnReadIndexs[i]));
+                String unreadCount = strUnReadIndexs[i];
+                Integer inc = Integer.parseInt(unreadCount);
+                data.setUnreadMessages(inc);
                 sendMessagesData.add(data);
             }
         }
