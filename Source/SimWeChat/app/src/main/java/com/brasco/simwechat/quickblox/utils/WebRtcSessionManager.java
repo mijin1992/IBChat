@@ -4,6 +4,8 @@ import android.content.Context;
 import android.util.Log;
 
 import com.brasco.simwechat.ContactProfileActivity;
+import com.brasco.simwechat.app.AppGlobals;
+import com.brasco.simwechat.quickblox.activity.CallActivity;
 import com.brasco.simwechat.utils.LogUtil;
 import com.brasco.simwechat.quickblox.QBData;
 import com.quickblox.users.model.QBUser;
@@ -64,7 +66,8 @@ public class WebRtcSessionManager extends QBRTCClientSessionCallbacksImpl {
                 }
             }
             if (otherUsername != null) {
-                ContactProfileActivity.start(context, true, otherUsername);
+                CallActivity.start(AppGlobals.mainActivity, true);
+                //ContactProfileActivity.start(context, true, otherUsername);
             }
         }
     }
