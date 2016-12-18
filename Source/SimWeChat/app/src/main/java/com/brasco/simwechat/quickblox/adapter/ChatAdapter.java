@@ -3,6 +3,9 @@ package com.brasco.simwechat.quickblox.adapter;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.MediaPlayer;
+import android.net.Uri;
+import android.os.Environment;
 import android.text.format.DateFormat;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +17,7 @@ import android.widget.TextView;
 import com.brasco.simwechat.ChatActivity;
 import com.brasco.simwechat.R;
 import com.brasco.simwechat.app.AppGlobals;
+import com.brasco.simwechat.http.HttpDownloader;
 import com.brasco.simwechat.utils.LogUtil;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
@@ -80,6 +84,12 @@ public class ChatAdapter extends BaseListAdapter<QBChatMessage> implements Stick
         holder.audio = (ImageView) convertView.findViewById(R.id.ic_audio);
         holder.time = (TextView) convertView.findViewById(R.id.txt_time);
 
+        convertView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                TryDownloadFile(holder.audioUrl, holder.audioFilename);
+            }
+        });
         setMessageBody(holder, chatMessage);
 
         if (isIncoming(chatMessage) && !isRead(chatMessage)){
@@ -88,6 +98,28 @@ public class ChatAdapter extends BaseListAdapter<QBChatMessage> implements Stick
 
         downloadMore(position);
         return convertView;
+    }
+
+    private void TryDownloadFile(String url, String filename) {
+        HttpDownloader httpDownloader = new HttpDownloader();
+        httpDownloader.SetDownloaderListener(new HttpDownloader.HttpDownloaderListener() {
+            @Override
+            public void OnDownloaderResult(String a_strPath) {
+                if (a_strPath == null)	{  return;  }
+                if (a_strPath.length() == 0) { return;  }
+                PlayAudio(a_strPath);
+            }
+        });
+
+        httpDownloader.SetFileName(filename);
+        httpDownloader.SetUrl(url);
+        httpDownloader.execute();
+    }
+
+    private void PlayAudio(String filePath){
+        MediaPlayer mpintro = MediaPlayer.create(mActivity, Uri.parse(filePath));
+        mpintro.setLooping(false);
+        mpintro.start();
     }
 
     private void downloadMore(int position) {
@@ -159,8 +191,8 @@ public class ChatAdapter extends BaseListAdapter<QBChatMessage> implements Stick
             Collection<QBAttachment> attachments = chatMessage.getAttachments();
             QBAttachment attachment = attachments.iterator().next();
             Integer id = Integer.parseInt(attachment.getId());
-            String url = attachment.getUrl();
-            //TryDownloadFile(url, id + ".mp4");
+            holder.audioUrl = attachment.getUrl();
+            holder.audioFilename = "audiomessage_" + chatMessage.getDateSent() + ".mp3";
         } else {
             holder.messageBodyTextView.setText(chatMessage.getBody());
             holder.messageBodyTextView.setVisibility(View.VISIBLE);
@@ -235,6 +267,8 @@ public class ChatAdapter extends BaseListAdapter<QBChatMessage> implements Stick
         public ImageView userImage;
         public ImageView audio;
         public TextView time;
+        public String audioUrl;
+        public String audioFilename;
     }
 
     public interface OnItemInfoExpandedListener {
