@@ -84,12 +84,18 @@ public class ChatAdapter extends BaseListAdapter<QBChatMessage> implements Stick
         holder.audio = (ImageView) convertView.findViewById(R.id.ic_audio);
         holder.time = (TextView) convertView.findViewById(R.id.txt_time);
 
-        convertView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                TryDownloadFile(holder.audioUrl, holder.audioFilename);
-            }
-        });
+        Boolean hasAttachments = hasAttachments(chatMessage);
+        String type = "";
+        if (hasAttachments)
+            type = getAttachmentsType(chatMessage);
+        if (hasAttachments && type.equals(QBAttachment.AUDIO_TYPE)) {
+            convertView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    TryDownloadFile(holder.audioUrl, holder.audioFilename);
+                }
+            });
+        }
         setMessageBody(holder, chatMessage);
 
         if (isIncoming(chatMessage) && !isRead(chatMessage)){
