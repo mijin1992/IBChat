@@ -19,6 +19,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.brasco.simwechat.R;
+import com.brasco.simwechat.app.AppGlobals;
+import com.brasco.simwechat.model.UserData;
 import com.brasco.simwechat.quickblox.QBConstants;
 import com.brasco.simwechat.quickblox.db.QbUsersDbManager;
 import com.brasco.simwechat.quickblox.utils.CollectionsUtils;
@@ -26,6 +28,7 @@ import com.brasco.simwechat.quickblox.utils.RingtonePlayer;
 import com.brasco.simwechat.quickblox.utils.UiUtils;
 import com.brasco.simwechat.quickblox.utils.UsersUtils;
 import com.brasco.simwechat.quickblox.utils.WebRtcSessionManager;
+import com.brasco.simwechat.utils.LogUtil;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
@@ -127,11 +130,14 @@ public class IncomeCallFragment extends Fragment implements Serializable, View.O
         callTypeTextView = (TextView) view.findViewById(R.id.call_type);
 
         final ImageView callerAvatarImageView = (ImageView) view.findViewById(R.id.image_caller_avatar);
-        callerAvatarImageView.setBackgroundDrawable(getBackgroundForCallerAvatar(currentSession.getCallerID()));
+        //callerAvatarImageView.setBackgroundDrawable(getBackgroundForCallerAvatar(currentSession.getCallerID()));
 
         TextView callerNameTextView = (TextView) view.findViewById(R.id.text_caller_name);
 
-        QBUser callerUser = qbUserDbManager.getUserById(currentSession.getCallerID());
+        QBUser callerUser = getUserDataFromUserId(currentSession.getCallerID()).getQBUser();
+        if (callerUser == null){
+            callerUser = qbUserDbManager.getUserById(currentSession.getCallerID());
+        }
         callerNameTextView.setText(UsersUtils.getUserNameOrId(callerUser, currentSession.getCallerID()));
 
         if (callerUser != null) {
@@ -273,5 +279,16 @@ public class IncomeCallFragment extends Fragment implements Serializable, View.O
     private void enableButtons(boolean enable) {
         takeButton.setEnabled(enable);
         rejectButton.setEnabled(enable);
+    }
+    private UserData getUserDataFromUserId(Integer userId){
+        for(int i = 0; i < AppGlobals.mAllUserData.size(); i++){
+            UserData user = AppGlobals.mAllUserData.get(i);
+            Integer id = user.getQBUser().getId();
+            if (id.equals(userId)){
+                return user;
+            }
+        }
+        LogUtil.writeDebugLog(TAG, "getUserDataFromSenderId", "return value is null");
+        return null;
     }
 }

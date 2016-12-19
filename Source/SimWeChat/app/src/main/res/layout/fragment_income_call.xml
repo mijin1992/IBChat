@@ -15,7 +15,8 @@
 
         <ImageView
             android:id="@+id/image_caller_avatar"
-            style="@style/CallerAvatar" />
+            android:layout_width="80dp"
+            android:layout_height="80dp"/>
 
         <TextView
             android:id="@+id/text_caller_name"

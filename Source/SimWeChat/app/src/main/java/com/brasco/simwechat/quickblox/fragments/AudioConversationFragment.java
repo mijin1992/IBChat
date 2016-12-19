@@ -14,10 +14,13 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.brasco.simwechat.R;
+import com.brasco.simwechat.app.AppGlobals;
+import com.brasco.simwechat.model.UserData;
 import com.brasco.simwechat.quickblox.QBConstants;
 import com.brasco.simwechat.quickblox.activity.CallActivity;
 import com.brasco.simwechat.quickblox.utils.CollectionsUtils;
 import com.brasco.simwechat.quickblox.utils.UiUtils;
+import com.brasco.simwechat.utils.LogUtil;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
@@ -82,31 +85,6 @@ public class AudioConversationFragment extends BaseConversationFragment implemen
         timerChronometer = (Chronometer) view.findViewById(R.id.chronometer_timer_audio_call);
 
         final ImageView firstOpponentAvatarImageView = (ImageView) view.findViewById(R.id.image_caller_avatar);
-        firstOpponentAvatarImageView.setBackgroundDrawable(UiUtils.getColorCircleDrawable(opponents.get(0).getId()));
-        String strUrl= opponents.get(0).getCustomData();
-        if(strUrl != null && !strUrl.isEmpty()) {
-            Glide.with(getActivity())
-                    .load(strUrl)
-                    .listener(new RequestListener<String, GlideDrawable>() {
-                        @Override
-                        public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-                            Bitmap bm = BitmapFactory.decodeResource(getActivity().getResources(), R.drawable.button_select_avatar);
-                            firstOpponentAvatarImageView.setImageBitmap(bm);
-                            return false;
-                        }
-                        @Override
-                        public boolean onResourceReady(GlideDrawable resource, String model,
-                                                       Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                            return false;
-                        }
-                    })
-                    .override(QBConstants.PREFERRED_IMAGE_SIZE_PREVIEW, QBConstants.PREFERRED_IMAGE_SIZE_PREVIEW)
-                    .error(R.drawable.ic_error)
-                    .into(firstOpponentAvatarImageView);
-        } else {
-            Bitmap bm = BitmapFactory.decodeResource(getActivity().getResources(), R.drawable.button_select_avatar);
-            firstOpponentAvatarImageView.setImageBitmap(bm);
-        }
 
         alsoOnCallText = (TextView) view.findViewById(R.id.text_also_on_call);
         setVisibilityAlsoOnCallTextView();
@@ -121,6 +99,38 @@ public class AudioConversationFragment extends BaseConversationFragment implemen
         audioSwitchToggleButton.setVisibility(View.VISIBLE);
 
         actionButtonsEnabled(false);
+
+        Integer userId = opponents.get(0).getId();
+        QBUser user  = getUserDataFromUserId(userId).getQBUser();
+        if (user!= null) {
+            String strUrl = user.getCustomData();
+            if (strUrl != null && !strUrl.isEmpty()) {
+                Glide.with(getActivity())
+                        .load(strUrl)
+                        .listener(new RequestListener<String, GlideDrawable>() {
+                            @Override
+                            public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                                Bitmap bm = BitmapFactory.decodeResource(getActivity().getResources(), R.drawable.button_select_avatar);
+                                firstOpponentAvatarImageView.setImageBitmap(bm);
+                                return false;
+                            }
+
+                            @Override
+                            public boolean onResourceReady(GlideDrawable resource, String model,
+                                                           Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                                return false;
+                            }
+                        })
+                        .override(QBConstants.PREFERRED_IMAGE_SIZE_PREVIEW, QBConstants.PREFERRED_IMAGE_SIZE_PREVIEW)
+                        .error(R.drawable.ic_error)
+                        .into(firstOpponentAvatarImageView);
+            } else {
+                Bitmap bm = BitmapFactory.decodeResource(getActivity().getResources(), R.drawable.button_select_avatar);
+                firstOpponentAvatarImageView.setImageBitmap(bm);
+            }
+            firstOpponentNameTextView.setText(user.getFullName());
+            otherOpponentsTextView.setText(user.getFullName());
+        }
     }
 
     private void setVisibilityAlsoOnCallTextView() {
@@ -191,5 +201,17 @@ public class AudioConversationFragment extends BaseConversationFragment implemen
                 audioSwitchToggleButton.setChecked(false);
             }
         }
+    }
+
+    private UserData getUserDataFromUserId(Integer userId){
+        for(int i = 0; i < AppGlobals.mAllUserData.size(); i++){
+            UserData user = AppGlobals.mAllUserData.get(i);
+            Integer id = user.getQBUser().getId();
+            if (id.equals(userId)){
+                return user;
+            }
+        }
+        LogUtil.writeDebugLog(TAG, "getUserDataFromSenderId", "return value is null");
+        return null;
     }
 }
