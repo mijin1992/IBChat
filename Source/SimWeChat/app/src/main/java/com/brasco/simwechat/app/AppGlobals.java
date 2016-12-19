@@ -29,7 +29,6 @@ public class AppGlobals {
     public static MainActivity mainActivity;
 
     public static ArrayList<UserData> mAllUserData = new ArrayList<UserData>();
-    public static ArrayList<RecentMessageData> mRecentessageArray = new ArrayList<RecentMessageData>();
 
     /*
      * Screen size

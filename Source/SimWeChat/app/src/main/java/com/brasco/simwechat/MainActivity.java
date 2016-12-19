@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.brasco.simwechat.adapter.ChatListAdapter;
 import com.brasco.simwechat.app.AppGlobals;
 import com.brasco.simwechat.app.AppPreference;
 import com.brasco.simwechat.app.Constant;
@@ -90,7 +91,7 @@ public class MainActivity extends BaseActivity implements DialogsManager.Managin
     private boolean isRunForCall;
     private WebRtcSessionManager webRtcSessionManager;
     private PermissionsChecker checker;
-
+    public ChatListAdapter chatListAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,6 +106,7 @@ public class MainActivity extends BaseActivity implements DialogsManager.Managin
         m_TabView.setViewPager(m_ViewPager);
         m_TabView.setCurrentItem(0);
 
+        chatListAdapter = new ChatListAdapter(this, null);
         mPrefs = new AppPreference(this);
         progressDialog = new MyProgressDialog(this, 0);
         AppGlobals.mainActivity = this;
@@ -296,6 +298,15 @@ public class MainActivity extends BaseActivity implements DialogsManager.Managin
         }
         return null;
     }
+    public UserData getUserDataFromUserId(Integer userId){
+        for (int i=0; i< AppGlobals.mAllUserData.size(); i++){
+            UserData user = AppGlobals.mAllUserData.get(i);
+            Integer id = user.getQBUser().getId();
+            if (id.equals(userId))
+                return user;
+        }
+        return null;
+    }
     private void loadUpdatedDialog(String dialogId) {
         LogUtil.writeDebugLog(TAG, "loadUpdatedDialog", "start");
         ChatHelper.getInstance().getDialogById(dialogId, new QbEntityCallbackImpl<QBChatDialog>() {
@@ -303,6 +314,7 @@ public class MainActivity extends BaseActivity implements DialogsManager.Managin
             public void onSuccess(QBChatDialog result, Bundle bundle) {
                 LogUtil.writeDebugLog(TAG, "loadUpdatedDialog", "onSuccess");
                 QbDialogHolder.getInstance().addDialog(result);
+                updateDialogsAdapter();
             }
 
             @Override
@@ -383,6 +395,7 @@ public class MainActivity extends BaseActivity implements DialogsManager.Managin
         dialogsManager.removeManagingDialogsCallbackListener(this);
     }
     public void updateDialogsAdapter() {
+        chatListAdapter.updateList(new ArrayList<>(QbDialogHolder.getInstance().getDialogs().values()));
         LogUtil.writeDebugLog(TAG, "updateDialogsAdapter", "1");
 
     }
@@ -416,56 +429,6 @@ public class MainActivity extends BaseActivity implements DialogsManager.Managin
         boolean equalActual = actualCurrentOpponentsList.retainAll(currentOpponentsList);
         boolean equalCurrent = currentOpponentsList.retainAll(actualCurrentOpponentsList);
         return !equalActual && !equalCurrent;
-    }
-    private void addRecentMessage(String dialogId, QBChatMessage qbChatMessage, Integer senderId){
-        if(qbChatMessage.getBody() != null && !qbChatMessage.getBody().isEmpty()) {
-            String userId = null;
-            String userName = null;
-            String logoUrl = null;
-            for (int i = 0; i < AppGlobals.mAllUserData.size(); i++){
-                QBUser user = AppGlobals.mAllUserData.get(i).getQBUser();
-                Integer id = user.getId();
-                if (id.equals(senderId)){
-                    userId = user.getLogin();
-                    userName = user.getFullName();
-                    logoUrl = user.getCustomData();
-                    break;
-                }
-            }
-            if (userId != null) {
-                String message = qbChatMessage.getBody();
-                Date date = new Date();
-                long time = date.getTime();
-                boolean isExist = false;
-                String notificationMessage = "";
-                for (int i = 0; i < AppGlobals.mRecentessageArray.size(); i++) {
-                    RecentMessageData data = AppGlobals.mRecentessageArray.get(i);
-                    if (data.getUserId().equals(userId)) {
-                        data.setMessage(message);
-                        data.setTime(time);
-                        AppGlobals.mRecentessageArray.remove(i);
-                        AppGlobals.mRecentessageArray.add(0, data);
-                        notificationMessage = userName + ": " +message;
-                        isExist = true;
-                        break;
-                    }
-                }
-                if (isExist == false){
-                    LogUtil.writeDebugLog(TAG, "addReceivedMessage", "5");
-                    RecentMessageData receivedMessage = new RecentMessageData(userId, userName, message, time, logoUrl);
-                    AppGlobals.mRecentessageArray.add(0, receivedMessage);
-
-                    notificationMessage = userName + " sent new message to you.";
-
-                }
-//                if (mPrefs.getNotifications() && mPrefs.getNotificationMessageReceived())
-//                    NotificationUtils.showNotification(getApplicationContext(), MainActivity.class,
-//                            ResourceUtils.getString(R.string.notification_title), notificationMessage,
-//                            R.drawable.ic_launcher, 1);
-
-                updateDialogsAdapter();
-            }
-        }
     }
     private void initUsersList() {
         LogUtil.writeDebugLog(TAG, "initUsersList", "1");
@@ -535,6 +498,18 @@ public class MainActivity extends BaseActivity implements DialogsManager.Managin
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
         super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            if (requestCode == REQUEST_DIALOG_ID_FOR_UPDATE) {
+                if (data != null) {
+                    String dialogId = data.getStringExtra(ChatActivity.EXTRA_DIALOG_ID);
+                    loadUpdatedDialog(dialogId);
+                } else {
+                    updateDialogsList();
+                }
+            }
+        } else {
+            updateDialogsAdapter();
+        }
     }
 
     @Override
@@ -612,7 +587,7 @@ public class MainActivity extends BaseActivity implements DialogsManager.Managin
             LogUtil.writeDebugLog(TAG, "AllDialogsMessageListener", "processMessage");
             if (!senderId.equals(ChatHelper.getCurrentUser().getId())) {
                 dialogsManager.onGlobalMessageReceived(dialogId, qbChatMessage);
-                addRecentMessage(dialogId, qbChatMessage, senderId);
+
             }
         }
     }

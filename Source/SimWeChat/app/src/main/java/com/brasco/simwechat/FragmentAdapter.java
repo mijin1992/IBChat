@@ -19,9 +19,9 @@ import java.util.ArrayList;
  */
 
 public class FragmentAdapter extends BottomTabFragmentPagerAdapter {
-    private Context m_Context = null;
+    private MainActivity m_Context = null;
 
-    public FragmentAdapter(Context context, FragmentManager fm) {
+    public FragmentAdapter(MainActivity context, FragmentManager fm) {
         super(fm);
         m_Context = context;
     }
@@ -34,7 +34,7 @@ public class FragmentAdapter extends BottomTabFragmentPagerAdapter {
     @Override
     public Fragment getItem(int position) {
         if (position == 0)
-            return ChatFragment.newInstance();
+            return ChatFragment.newInstance(m_Context);
         else if (position == 1)
             return ContactFragment.newInstance();
         else if (position == 2)

@@ -112,7 +112,6 @@ public class LogInActivity extends IBActivity implements View.OnClickListener {
         progressDialog = new MyProgressDialog(this, 0);
         progressDialog.show();
         createSession();
-        AppGlobals.mRecentessageArray = mPrefs.getRecentMessagesArray();
     }
 
     @Override

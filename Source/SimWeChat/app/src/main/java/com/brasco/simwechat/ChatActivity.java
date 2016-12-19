@@ -341,7 +341,6 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener
 
             if (QBDialogType.PRIVATE.equals(qbChatDialog.getType())) {
                 showMessage(chatMessage);
-                inserRecentMessagesArray(chatMessage, qbChatDialog);
             }
 
             if (attachment != null) {
@@ -353,25 +352,6 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener
             Toaster.shortToast("Can't send a message, You are not connected to chat. Please login again.");
         }
     }
-
-//    private void insertSentMessagesArray(QBChatMessage chatMessage, QBChatDialog dialog ){
-//        if(chatMessage.getBody() != null) {
-//
-//            String otherUsername = AppGlobals.curChattingUser.getUserName();
-//            for (int i = 0; i < AppGlobals.sentMessageData.size(); i++) {
-//                RecentMessageData data = AppGlobals.sentMessageData.get(i);
-//                if (data.getUsername().equals(otherUsername)) {
-//                    AppGlobals.sentMessageData.remove(i);
-//                    break;
-//                }
-//            }
-//            String message = chatMessage.getBody();
-//            Date date = new Date();
-//            long time = date.getTime();
-//            RecentMessageData sendMessage = new RecentMessageData("null", "null", otherUsername, message, time);
-//            AppGlobals.sentMessageData.add(0, sendMessage);
-//        }
-//    }
 
     private void initChat() {
         LogUtil.writeDebugLog(TAG, "initChat", "1");
@@ -552,40 +532,7 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener
     public void sendAttachedFile(){
         onSendChatClick();
     }
-    private void inserRecentMessagesArray(QBChatMessage chatMessage, QBChatDialog dialog ){
-        LogUtil.writeDebugLog(TAG, "insertSentMessagesArray", "1");
-        String message = chatMessage.getBody();
-        if (message != null && !message.isEmpty()){
-            String otherUserId = AppGlobals.curChattingUser.getUserId();
-            Boolean exist = false;
-            for (int i = 0; i < AppGlobals.mRecentessageArray.size(); i++) {
-                RecentMessageData data = AppGlobals.mRecentessageArray.get(i);
-                if (data.getUserId().equals(otherUserId)) {
-                    LogUtil.writeDebugLog(TAG, "insertSentMessagesArray", "2");
-                    exist = true;
-                    RecentMessageData recentMessageData = AppGlobals.mRecentessageArray.get(i);
-                    recentMessageData.setMessage(message);
-                    Date date = new Date();
-                    long time = date.getTime();
-                    recentMessageData.setTime(time);
-                    AppGlobals.mRecentessageArray.remove(i);
-                    AppGlobals.mRecentessageArray.add(0, recentMessageData);
-                    break;
-                }
-            }
-            if (exist == false) {
-                LogUtil.writeDebugLog(TAG, "insertSentMessagesArray", "3");
-                Date date = new Date();
-                long time = date.getTime();
-                RecentMessageData recentMessageData = new RecentMessageData(otherUserId
-                        , AppGlobals.curChattingUser.getFullName(), message, time
-                        , AppGlobals.curChattingUser.getQBUser().getCustomData());
 
-                AppGlobals.mRecentessageArray.add(0, recentMessageData);
-            }
-            mPrefs.setRecentMessagesArray(AppGlobals.mRecentessageArray);
-        }
-    }
     @Override
     public void onEmojiconClicked(Emojicon emojicon) {
         EmojiconsFragment.input(m_txtMessage, emojicon);

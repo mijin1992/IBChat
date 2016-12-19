@@ -5,12 +5,15 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.brasco.simwechat.MainActivity;
 import com.brasco.simwechat.R;
 import com.brasco.simwechat.adapter.ChatListAdapter;
-import com.brasco.simwechat.message.Message;
+import com.brasco.simwechat.app.AppGlobals;
 import com.brasco.simwechat.model.RecentMessageData;
+import com.quickblox.chat.model.QBChatDialog;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -25,12 +28,11 @@ import java.util.Calendar;
  */
 public class ChatFragment extends Fragment {
     private ListView m_lstChatView;
-    private ArrayList<Message> m_ChatList = new ArrayList<>();
-    private ArrayList<RecentMessageData> mRecentessageArray = new ArrayList<RecentMessageData>();
+    private ArrayList<QBChatDialog> mDialogArray;
     private ChatListAdapter m_Adapter = null;
+    public MainActivity m_Context = null;
 
     public ChatFragment() {
-        // Required empty public constructor
     }
 
     /**
@@ -40,8 +42,9 @@ public class ChatFragment extends Fragment {
      * @return A new instance of fragment ChatFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static ChatFragment newInstance() {
+    public static ChatFragment newInstance(MainActivity context) {
         ChatFragment fragment = new ChatFragment();
+        fragment.m_Context = context;
         return fragment;
     }
 
@@ -56,19 +59,9 @@ public class ChatFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_chat, container, false);
         m_lstChatView = (ListView) view.findViewById(R.id.list_chats);
-        setSampleChatListData();
-        m_Adapter = new ChatListAdapter(getContext(), m_ChatList);
+        m_Adapter = m_Context.chatListAdapter;
         m_lstChatView.setAdapter(m_Adapter);
 
         return view;
-    }
-
-    private void setSampleChatListData() {
-        Calendar calendar = Calendar.getInstance();
-        m_ChatList.add(new Message("Zachery", "", "Sample Message1", calendar.getTimeInMillis()));
-        m_ChatList.add(new Message("Terisa", "", "Sample Message2", calendar.getTimeInMillis()));
-        m_ChatList.add(new Message("Chana", "", "Sample Message3", calendar.getTimeInMillis()));
-        m_ChatList.add(new Message("Dwain", "", "Sample Message4", calendar.getTimeInMillis()));
-        m_ChatList.add(new Message("Rosalie", "", "Sample Message5", calendar.getTimeInMillis()));
     }
 }
