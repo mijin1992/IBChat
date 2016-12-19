@@ -24,13 +24,13 @@
     <string name="mode_video">Video Mode</string>
 
     <string name="search">Search&#8230;</string>
-<string name="dlg_signal_error">Disconnected… Please check your Internet connection!</string>
-    <string name="dlg_login">Login…</string>
-    <string name="dlg_sign_in">Sign In…</string>
-    <string name="dlg_updating_user">Updating user…</string>
-    <string name="dlg_creating_new_user">Creating new user…</string>
-    <string name="dlg_logout">Logout…</string>
-    <string name="dlg_loading_opponents">Loading opponents…</string>
+    <string name="dlg_signal_error">Disconnectedï¿½ Please check your Internet connection!</string>
+    <string name="dlg_login">Loginï¿½</string>
+    <string name="dlg_sign_in">Sign Inï¿½</string>
+    <string name="dlg_updating_user">Updating userï¿½</string>
+    <string name="dlg_creating_new_user">Creating new userï¿½</string>
+    <string name="dlg_logout">Logoutï¿½</string>
+    <string name="dlg_loading_opponents">Loading opponentsï¿½</string>
 
 
     <!-- Errors strings. -->
@@ -84,8 +84,8 @@
     <string name="opponent_closed">Closed</string>
     <string name="text_incoming_audio_call">Incoming Audio Call</string>
     <string name="text_incoming_video_call">Incoming Video Call</string>
-    <string name="text_status_connect">Connect…</string>
-    <string name="text_status_checking">Checking…</string>
+    <string name="text_status_connect">Connectï¿½</string>
+    <string name="text_status_checking">Checkingï¿½</string>
     <string name="text_status_connected">Connected</string>
     <string name="text_status_disconnected">Disconnected</string>
 

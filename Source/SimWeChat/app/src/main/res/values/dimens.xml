@@ -5,7 +5,7 @@
 
     <dimen name="cp_dialog_width">200dp</dimen>
     <dimen name="cp_dialog_height">300dp</dimen>
-<dimen name="fab_margin">16dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
     <dimen name="title_text_size">22sp</dimen>
     <dimen name="mid_text_size">14sp</dimen>
     <dimen name="small_text_size">12sp</dimen>

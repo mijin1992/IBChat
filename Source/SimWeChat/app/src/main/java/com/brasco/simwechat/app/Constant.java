@@ -29,6 +29,7 @@ public class Constant {
     public static final int REQ_VIDEO_FROM_GALLERY = 10004;
     public static final int REQ_PHOTO_FILE = 10005;
     public static final int REQ_VIDEO_FILE = 10006;
+    public static final int REQ_INPUT_VALUE = 10100;
 
     /*
      * Extra keys
@@ -44,6 +45,8 @@ public class Constant {
     public static final String REQ_IMAGE_CAMERAACTIVITY_TYPE = "EK_IMAGE_URL";
     public static final String REQ_VIDEO_TYPE = "EK_VIDEO_FILE";
     public static final String REQ_IMAGE_TYPE = "EK_IMAGE_FILE";
+    public static final String REQ_INPUT_TYPE = "INPUT_TYPE";
+    public static final String REQ_INPUT_STRING = "INPUT_STRING";
 
     /*
     Key for View Request and Show

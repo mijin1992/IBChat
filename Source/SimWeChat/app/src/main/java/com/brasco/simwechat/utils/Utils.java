@@ -267,4 +267,9 @@ public class Utils {
         Country2DialCode.put("PS", "970");
         Country2DialCode.put("EH", "212");
     }
+
+    public enum Gender {
+        MALE,   // male - 0
+        FEMALE  // female - 1
+    }
 }
