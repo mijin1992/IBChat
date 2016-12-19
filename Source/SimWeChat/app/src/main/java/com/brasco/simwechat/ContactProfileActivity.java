@@ -2,6 +2,8 @@ package com.brasco.simwechat;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -16,6 +18,7 @@ import android.widget.TextView;
 import com.brasco.simwechat.app.AppGlobals;
 import com.brasco.simwechat.app.Constant;
 import com.brasco.simwechat.model.UserData;
+import com.brasco.simwechat.quickblox.QBConstants;
 import com.brasco.simwechat.quickblox.activity.BaseActivity;
 import com.brasco.simwechat.quickblox.activity.CallActivity;
 import com.brasco.simwechat.quickblox.core.utils.Toaster;
@@ -27,6 +30,10 @@ import com.brasco.simwechat.quickblox.utils.UsersUtils;
 import com.brasco.simwechat.quickblox.utils.WebRtcSessionManager;
 import com.brasco.simwechat.utils.LogUtil;
 import com.brasco.simwechat.utils.Utils;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.quickblox.chat.QBChatService;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
@@ -166,6 +173,31 @@ public class ContactProfileActivity extends BaseActivity implements View.OnClick
             if (country != null) {
                 country = country.substring(country.indexOf("//") + 2);
                 m_txtRegion.setText(country);
+            }
+            QBUser qbuser = m_curUser.getQBUser();
+            String strUrl= qbuser.getCustomData();
+            if(strUrl != null && !strUrl.isEmpty()) {
+                Glide.with(this)
+                        .load(strUrl)
+                        .listener(new RequestListener<String, GlideDrawable>() {
+                            @Override
+                            public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                                Bitmap bm = BitmapFactory.decodeResource(getApplication().getResources(), R.drawable.button_select_avatar);
+                                m_ivProfileImage.setImageBitmap(bm);
+                                return false;
+                            }
+                            @Override
+                            public boolean onResourceReady(GlideDrawable resource, String model,
+                                                           Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                                return false;
+                            }
+                        })
+                        .override(QBConstants.PREFERRED_IMAGE_SIZE_PREVIEW, QBConstants.PREFERRED_IMAGE_SIZE_PREVIEW)
+                        .error(R.drawable.ic_error)
+                        .into(m_ivProfileImage);
+            } else {
+                Bitmap bm = BitmapFactory.decodeResource(this.getResources(), R.drawable.button_select_avatar);
+                m_ivProfileImage.setImageBitmap(bm);
             }
         }
     }

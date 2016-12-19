@@ -119,17 +119,6 @@ public abstract class BaseConversationFragment extends Fragment implements CallA
 
     protected abstract void configureOutgoingScreen();
 
-    private void initActionBar() {
-        toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar_call);
-
-        configureToolbar();
-
-        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-        actionBar = ((AppCompatActivity) getActivity()).getDelegate().getSupportActionBar();
-
-        configureActionBar();
-    }
-
     protected abstract void configureActionBar();
 
     protected abstract void configureToolbar();
