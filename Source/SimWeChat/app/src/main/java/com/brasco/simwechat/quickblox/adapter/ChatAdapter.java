@@ -131,9 +131,10 @@ public class ChatAdapter extends BaseListAdapter<QBChatMessage> implements Stick
     private void downloadMore(int position) {
         LogUtil.writeDebugLog(TAG, "downloadMore", "1");
         if (position == 0) {
-            if (getCount() != previousGetCount) {
+            int count = getCount();
+            if (count != previousGetCount) {
                 LogUtil.writeDebugLog(TAG, "downloadMore", "2");
-                paginationListener.downloadMore();
+                //paginationListener.downloadMore();
                 previousGetCount = getCount();
             }
         }
