@@ -5,11 +5,14 @@ import java.util.Collections;
 import java.util.List;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -17,6 +20,11 @@ import com.brasco.simwechat.MainActivity;
 import com.brasco.simwechat.R;
 import com.brasco.simwechat.contact.Contact;
 import com.brasco.simwechat.model.UserData;
+import com.brasco.simwechat.quickblox.QBConstants;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 
 public class ContactListAdapter extends ArrayAdapter<UserData>{
 
@@ -75,6 +83,31 @@ public class ContactListAdapter extends ArrayAdapter<UserData>{
 		View infoView = parentView.findViewById(R.id.container_contact);
 		TextView nameView = (TextView)infoView.findViewById(R.id.txt_contact);
 		nameView.setText(item.getFullName());
+		final ImageView userImage = (ImageView) infoView.findViewById(R.id.badge_contact);
+		String strUrl= item.getQBUser().getCustomData();
+		if(strUrl != null && !strUrl.isEmpty()) {
+			Glide.with(mActivity)
+					.load(strUrl)
+					.listener(new RequestListener<String, GlideDrawable>() {
+						@Override
+						public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+							Bitmap bm = BitmapFactory.decodeResource(mActivity.getResources(), R.drawable.button_select_avatar);
+							userImage.setImageBitmap(bm);
+							return false;
+						}
+						@Override
+						public boolean onResourceReady(GlideDrawable resource, String model,
+													   Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+							return false;
+						}
+					})
+					.override(QBConstants.PREFERRED_IMAGE_SIZE_PREVIEW, QBConstants.PREFERRED_IMAGE_SIZE_PREVIEW)
+					.error(R.drawable.ic_error)
+					.into(userImage);
+		} else {
+			Bitmap bm = BitmapFactory.decodeResource(mActivity.getResources(), R.drawable.button_select_avatar);
+			userImage.setImageBitmap(bm);
+		}
 	}
 	
 	// this should be override by subclass if necessary

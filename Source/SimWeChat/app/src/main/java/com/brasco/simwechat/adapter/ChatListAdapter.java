@@ -97,7 +97,7 @@ public class ChatListAdapter extends BaseListAdapter<QBChatDialog> {
         long time = dialog.getLastMessageDateSent();
         time = time *1000;
         String strTime = "";
-        SimpleDateFormat df = new SimpleDateFormat("yy/MM/dd hh:mm:ss a");
+        SimpleDateFormat df = new SimpleDateFormat("yy/MM/dd");
         strTime = df.format(time);
         holder._date.setText(strTime);
         int unreadMessagesCount = dialog.getUnreadMessageCount();

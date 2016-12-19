@@ -156,7 +156,7 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener
         m_btnEmoji.setOnClickListener(this);
         m_btnSend.setOnClickListener(this);
 
-        ActionBar("Message");
+        ActionBar(user.getFullName());
 
         qbChatDialog = QbDialogHolder.getInstance().getChatDialogById(
                 getIntent().getStringExtra(EXTRA_DIALOG_ID));
