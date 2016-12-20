@@ -72,7 +72,7 @@ public class SignUpActivity extends IBActivity implements View.OnClickListener {
     private boolean m_bShowPassword = false;
 
     private CountryPicker m_CountryPicker = null;
-private QBUser userForSave;
+    private QBUser userForSave;
     private MyProgressDialog myProgressDialog;
     QBUser mQBUser;
     private String mLogoImagePath = "";
