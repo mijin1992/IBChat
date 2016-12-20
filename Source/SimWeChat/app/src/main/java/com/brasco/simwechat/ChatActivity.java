@@ -18,6 +18,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -90,6 +91,8 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener
     private ListView m_chatListView;
     private TextView m_btnToTalk;
 
+    private LinearLayout m_divider = null;
+
     private boolean m_bEmojiKeyboard = false;
     private String mReceivedImagePath = "";
     private String sendFilePath;
@@ -155,6 +158,8 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener
         m_btnAudio.setOnClickListener(this);
         m_btnEmoji.setOnClickListener(this);
         m_btnSend.setOnClickListener(this);
+
+        m_divider = (LinearLayout) findViewById(R.id.txt_divider);
 
         ActionBar(user.getFullName());
 
@@ -303,6 +308,7 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener
             m_btnSend.setVisibility(View.INVISIBLE);
             m_btnToTalk.setEnabled(true);
             m_btnToTalk.setVisibility(View.VISIBLE);
+            m_divider.setVisibility(View.INVISIBLE);
         } else {
             m_btnAudio.setImageResource(R.drawable.ic_audio_btn);
             m_txtMessage.setEnabled(true);
@@ -313,6 +319,7 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener
             m_btnSend.setVisibility(View.VISIBLE);
             m_btnToTalk.setEnabled(false);
             m_btnToTalk.setVisibility(View.INVISIBLE);
+            m_divider.setVisibility(View.VISIBLE);
         }
     }
 
