@@ -79,11 +79,14 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         m_userName = (TextView) v.findViewById(R.id.profile_name);
         m_userId = (TextView) v.findViewById(R.id.txt_id);
 
-        initUI();
-
         return v;
     }
 
+    @Override
+    public void onResume(){
+        super.onResume();
+        initUI();
+    }
     @Override
     public void onClick(View view) {
         switch (view.getId()) {

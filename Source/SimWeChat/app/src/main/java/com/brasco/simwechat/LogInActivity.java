@@ -373,7 +373,7 @@ public class LogInActivity extends IBActivity implements View.OnClickListener {
                 });
     }
     private void onAuthSuccess(FirebaseUser user) {
-        String username = usernameFromEmail(user.getEmail());
+//        String username = usernameFromEmail(user.getEmail());
 //        writeNewUser(user.getUid(), username, user.getEmail());
         // Go to MainActivity
 
