@@ -14,5 +14,11 @@ public class PostActivity extends IBActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post);
         ActionBar("My Posts");
+
+        m_txtName = (TextView) findViewById(R.id.my_name);
+        m_imageUser = (ImageView) findViewById(R.id.my_image);
+        m_listview = (ListView) findViewById(R.id.list_post);
+
+
     }
 }
