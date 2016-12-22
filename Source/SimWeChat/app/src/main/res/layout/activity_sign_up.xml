@@ -189,6 +189,31 @@
             android:textOff=""/>
     </LinearLayout>
     <include layout="@layout/horize_linear_divider"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="Email"
+            android:textColor="@color/textViewColor"
+            android:textSize="16sp"/>
+        <EditText
+            android:id="@+id/txt_input_email"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_gravity="center_vertical"
+            android:textColor="@color/textViewColor"
+            android:textSize="14sp"
+            android:inputType="textEmailAddress"
+            android:hint="jhon@gmail.com"
+            android:textColorHint="@color/hintColor"
+            android:background="@null"/>
+    </LinearLayout>
+    <include layout="@layout/horize_linear_divider"/>
     <Button
         android:id="@+id/button_sign_up"
         android:layout_width="match_parent"

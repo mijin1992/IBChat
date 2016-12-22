@@ -15,12 +15,15 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.brasco.simwechat.app.AppGlobals;
 import com.brasco.simwechat.app.AppPreference;
 import com.brasco.simwechat.app.Constant;
+import com.brasco.simwechat.countrypicker.Country;
 import com.brasco.simwechat.dialog.MyProgressDialog;
 import com.brasco.simwechat.model.DataHolder;
+import com.brasco.simwechat.model.User;
 import com.brasco.simwechat.utils.LogUtil;
 import com.brasco.simwechat.quickblox.QBData;
 import com.brasco.simwechat.quickblox.core.utils.SharedPrefsHelper;
@@ -28,6 +31,13 @@ import com.brasco.simwechat.quickblox.core.utils.Toaster;
 import com.brasco.simwechat.quickblox.services.CallService;
 import com.brasco.simwechat.quickblox.utils.SharedPreferencesUtil;
 import com.brasco.simwechat.quickblox.utils.chat.ChatHelper;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.quickblox.auth.QBAuth;
 import com.quickblox.auth.model.QBSession;
 import com.quickblox.chat.QBChatService;
@@ -52,10 +62,16 @@ public class LogInActivity extends IBActivity implements View.OnClickListener {
     protected MyProgressDialog progressDialog;
     QBUser mQBUser;
 
+    private DatabaseReference mDatabase;
+    private FirebaseAuth mAuth;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_log_in);
+
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        mAuth = FirebaseAuth.getInstance();
 
         mPrefs = new AppPreference(this);
 
@@ -112,6 +128,16 @@ public class LogInActivity extends IBActivity implements View.OnClickListener {
         progressDialog = new MyProgressDialog(this, 0);
         progressDialog.show();
         createSession();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        // Check auth on Activity start
+//        if (mAuth.getCurrentUser() != null) {
+//            onAuthSuccess(mAuth.getCurrentUser());
+//        }
     }
 
     @Override
@@ -205,11 +231,12 @@ public class LogInActivity extends IBActivity implements View.OnClickListener {
 
                         QBData.curQBUser = mQBUser;
                         setResult(RESULT_OK);
+
                         mPrefs.setQuickBloxUsername(mQBUser.getLogin());
                         mPrefs.setQuickBloxUserPass(mQBUser.getPassword());
-                        Intent intent= new Intent(LogInActivity.this, MainActivity.class);
-                        startActivity(intent);
-                        finish();
+
+                        firebaseSignIn();
+
                         break;
                     }
                 }
@@ -323,4 +350,49 @@ public class LogInActivity extends IBActivity implements View.OnClickListener {
             }
         });
     }
+
+    private void firebaseSignIn() {
+        Log.d(TAG, "signIn");
+
+        progressDialog.show();
+        String email = mQBUser.getEmail();
+        String password = m_txtPassword.getText().toString();
+        mAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        Log.d(TAG, "signIn:onComplete:" + task.isSuccessful());
+                        progressDialog.hide();
+                        if (task.isSuccessful()) {
+                            onAuthSuccess(task.getResult().getUser());
+                        } else {
+                            Toast.makeText(LogInActivity.this, "Sign In Failed",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+    }
+    private void onAuthSuccess(FirebaseUser user) {
+        String username = usernameFromEmail(user.getEmail());
+//        writeNewUser(user.getUid(), username, user.getEmail());
+        // Go to MainActivity
+
+        Intent intent= new Intent(LogInActivity.this, MainActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
+    private String usernameFromEmail(String email) {
+        if (email.contains("@")) {
+            return email.split("@")[0];
+        } else {
+            return email;
+        }
+    }
+    // [START basic_write]
+//    private void writeNewUser(String userId, String name, String email) {
+//        User user = new User(name, email);
+//        mDatabase.child("users").child(userId).setValue(user);
+//    }
+    // [END basic_write]
 }

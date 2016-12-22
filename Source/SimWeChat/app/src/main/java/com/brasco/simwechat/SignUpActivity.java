@@ -6,16 +6,19 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.text.InputType;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 //import com.bumptech.glide.Glide;
@@ -25,6 +28,7 @@ import android.widget.ToggleButton;
 
 import com.brasco.simwechat.countrypicker.CountryPicker;
 import com.brasco.simwechat.countrypicker.CountryPickerListener;
+import com.brasco.simwechat.model.User;
 import com.brasco.simwechat.utils.Utils;
 import com.bumptech.glide.util.Util;
 import com.brasco.simwechat.app.Constant;
@@ -39,6 +43,13 @@ import com.brasco.simwechat.quickblox.services.CallService;
 import com.brasco.simwechat.quickblox.utils.SharedPreferencesUtil;
 import com.brasco.simwechat.quickblox.utils.chat.ChatHelper;
 import com.brasco.simwechat.quickblox.utils.qb.callback.QbEntityCallbackTwoTypeWrapper;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.quickblox.chat.model.QBAttachment;
 import com.quickblox.content.QBContent;
 import com.quickblox.content.model.QBFile;
@@ -49,6 +60,7 @@ import com.quickblox.users.QBUsers;
 import com.quickblox.users.model.QBUser;
 
 import org.apache.commons.io.FilenameUtils;
+import org.w3c.dom.Text;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -66,23 +78,28 @@ public class SignUpActivity extends IBActivity implements View.OnClickListener {
     private EditText m_txtDialCode = null;
     private EditText m_txtMobileNumber = null;
     private EditText m_txtPassword = null;
+    private EditText m_txtEmail = null;
     private ToggleButton m_btnShowPassword = null;
     private Button m_btnSignUp = null;
 
     private boolean m_bShowPassword = false;
-
     private CountryPicker m_CountryPicker = null;
     private QBUser userForSave;
     private MyProgressDialog myProgressDialog;
     QBUser mQBUser;
     private String mLogoImagePath = "";
 
+    private DatabaseReference mDatabase;
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
         overridePendingTransition(R.anim.activity_enter, R.anim.activity_leave);
+
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        mAuth = FirebaseAuth.getInstance();
 
         myProgressDialog = new MyProgressDialog(this, 0);
 
@@ -94,6 +111,7 @@ public class SignUpActivity extends IBActivity implements View.OnClickListener {
         m_txtDialCode = (EditText) findViewById(R.id.txt_dial_code);
         m_txtMobileNumber = (EditText) findViewById(R.id.txt_phone_number);
         m_txtPassword = (EditText) findViewById(R.id.txt_input_password);
+        m_txtEmail = (EditText) findViewById(R.id.txt_input_email);
         m_btnShowPassword = (ToggleButton) findViewById(R.id.btn_show_password);
         m_btnSignUp = (Button) findViewById(R.id.button_sign_up);
         m_btnSelectAvatar.setOnClickListener(this);
@@ -115,6 +133,16 @@ public class SignUpActivity extends IBActivity implements View.OnClickListener {
         });
 
         ActionBar("Sign Up");
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        // Check auth on Activity start
+        if (mAuth.getCurrentUser() != null) {
+            onAuthSuccess(mAuth.getCurrentUser());
+        }
     }
 
     @Override
@@ -161,7 +189,7 @@ public class SignUpActivity extends IBActivity implements View.OnClickListener {
                     m_txtPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
                 break;
             case R.id.button_sign_up:
-                signUp();
+                firebaseSignUp();
                 break;
         }
     }
@@ -226,19 +254,14 @@ public class SignUpActivity extends IBActivity implements View.OnClickListener {
         startLoginService(qbUser);
     }
 
-    public void signUp() {
+    public void quickbloxSignUp() {
         LogUtil.writeDebugLog(TAG, "signUp", "start");
         String login = m_txtId.getText().toString().trim();
         String name = m_txtFullName.getText().toString().trim();
         String password = m_txtPassword.getText().toString();
-        String dialCode = m_txtDialCode.getText().toString();
+        String email = m_txtEmail.getText().toString();
         String phoneNumber = m_txtMobileNumber.getText().toString();
-        //phoneNumber = dialCode + " " + phoneNumber;
         String country = m_txtCountry.getText().toString();
-
-        if (!isValidData(login, password, name, phoneNumber)) {
-            return;
-        }
 
         myProgressDialog.show();
 
@@ -247,6 +270,7 @@ public class SignUpActivity extends IBActivity implements View.OnClickListener {
         mQBUser.setPassword(password);
         mQBUser.setFullName(name);
         mQBUser.setPhone(phoneNumber);
+        mQBUser.setEmail(email);
         mQBUser.setWebsite(country);
         QBUserSingUp(mQBUser);
     }
@@ -294,8 +318,9 @@ public class SignUpActivity extends IBActivity implements View.OnClickListener {
             }
         });
     }
-    private boolean isValidData(String login, String password, String name, String phonenumber) {
-        if (TextUtils.isEmpty(login) || TextUtils.isEmpty(password) || TextUtils.isEmpty(name) || TextUtils.isEmpty(phonenumber) ) {
+    private boolean isValidData(String login, String password, String name, String phonenumber, String email) {
+        if (TextUtils.isEmpty(login) || TextUtils.isEmpty(password) || TextUtils.isEmpty(name)
+                || TextUtils.isEmpty(phonenumber) || TextUtils.isEmpty(email)) {
             if (TextUtils.isEmpty(login)) {
                 m_txtId.setError("Please input user name.");
             }
@@ -307,6 +332,9 @@ public class SignUpActivity extends IBActivity implements View.OnClickListener {
             }
             if (TextUtils.isEmpty(phonenumber)) {
                 m_txtMobileNumber.setError("Please input phone number");
+            }
+            if (TextUtils.isEmpty(email)) {
+                m_txtEmail.setError("Please input email address");
             }
             return false;
         }
@@ -329,4 +357,48 @@ public class SignUpActivity extends IBActivity implements View.OnClickListener {
 //        sharedPrefsHelper.save(Constant.PREF_CURREN_ROOM_NAME, qbUser.getTags().get(0));
         sharedPrefsHelper.saveQbUser(qbUser);
     }
+
+    private void firebaseSignUp() {
+        Log.d(TAG, "signUp");
+        String login = m_txtId.getText().toString().trim();
+        String name = m_txtFullName.getText().toString().trim();
+        String password = m_txtPassword.getText().toString();
+        String email = m_txtEmail.getText().toString();
+        String phoneNumber = m_txtMobileNumber.getText().toString();
+        if (!isValidData(login, password, name, phoneNumber, email)) {
+            return;
+        }
+
+        myProgressDialog.show();
+        mAuth.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        Log.d(TAG, "createUser:onComplete:" + task.isSuccessful());
+                        myProgressDialog.hide();
+                        if (task.isSuccessful()) {
+                            onAuthSuccess(task.getResult().getUser());
+                        } else {
+                            Toast.makeText(SignUpActivity.this, task.getException().getLocalizedMessage(),
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+    }
+    private void onAuthSuccess(FirebaseUser user) {
+        String username = m_txtId.getText().toString();
+        String country = m_txtCountry.getText().toString();
+        // Write new user
+        writeNewUser(user.getUid(), username, user.getEmail(), "Male", country);
+        // SignUp to Quickblox
+        quickbloxSignUp();
+    }
+
+    // [START basic_write]
+    private void writeNewUser(String userId, String name, String email, String gender, String country) {
+        User user = new User(name, email, gender, country);
+        mDatabase.child("users").child(userId).setValue(user);
+    }
+    // [END basic_write]
+
 }

@@ -83,13 +83,13 @@ public abstract class BaseActivity extends CoreBaseActivity implements QbSession
         if (user == null) {
             LogUtil.writeDebugLog(TAG, "recreateChatSession", "User is null, can't restore session");
             Toaster.longToast("User is null, can't restore session");
+            throw new RuntimeException("User is null, can't restore session");
         }
 
         reloginToChat(user);
     }
 
     private void reloginToChat(final QBUser user) {
-        LogUtil.writeDebugLog(TAG, "reloginToChat", user.getLogin());
         ProgressDialogFragment.show(getSupportFragmentManager(), R.string.dlg_restoring_chat_session);
 
         ChatHelper.getInstance().login(user, new QBEntityCallback<Void>() {
