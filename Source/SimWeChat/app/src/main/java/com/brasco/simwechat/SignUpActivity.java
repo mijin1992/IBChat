@@ -26,9 +26,10 @@ import android.widget.ToggleButton;
 //import com.nguyenhoanglam.imagepicker.activity.ImagePickerActivity;
 //import com.nguyenhoanglam.imagepicker.model.Image;
 
+import com.brasco.simwechat.app.AppPreference;
 import com.brasco.simwechat.countrypicker.CountryPicker;
 import com.brasco.simwechat.countrypicker.CountryPickerListener;
-import com.brasco.simwechat.model.User;
+import com.brasco.simwechat.model.FireUser;
 import com.brasco.simwechat.utils.Utils;
 import com.bumptech.glide.util.Util;
 import com.brasco.simwechat.app.Constant;
@@ -64,7 +65,9 @@ import org.w3c.dom.Text;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class SignUpActivity extends IBActivity implements View.OnClickListener {
     private static final String TAG = LogInActivity.class.getSimpleName();
@@ -92,6 +95,8 @@ public class SignUpActivity extends IBActivity implements View.OnClickListener {
     private DatabaseReference mDatabase;
     private FirebaseAuth mAuth;
 
+    private AppPreference mPrefs;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -102,6 +107,7 @@ public class SignUpActivity extends IBActivity implements View.OnClickListener {
         mAuth = FirebaseAuth.getInstance();
 
         myProgressDialog = new MyProgressDialog(this, 0);
+        mPrefs = new AppPreference(this);
 
         m_btnSelectAvatar = (ImageButton) findViewById(R.id.btn_select_avatar);
         m_txtFullName = (EditText) findViewById(R.id.txt_full_name);
@@ -200,20 +206,21 @@ public class SignUpActivity extends IBActivity implements View.OnClickListener {
         startActivityForResult(intent, Constant.REQ_PHOTO_FILE);
     }
 
-    private void QBUserSignIn(QBUser user){
+    private void QBUserSignIn(final QBUser user){
         LogUtil.writeDebugLog(TAG, "QBUserSignIn", "start");
         ChatHelper.getInstance().login(user, new QBEntityCallback<Void>() {
             @Override
             public void onSuccess(Void aVoid, Bundle bundle) {
                 LogUtil.writeDebugLog(TAG, "QBUserSignIn", "onSuccess");
                 myProgressDialog.hide();
-                DataHolder.getInstance().addQbUser(mQBUser);
-                DataHolder.getInstance().setSignInQbUser(mQBUser);
-                SharedPreferencesUtil.saveQbUser(mQBUser);
-                QBData.curQBUser = mQBUser;
+                DataHolder.getInstance().addQbUser(user);
+                DataHolder.getInstance().setSignInQbUser(user);
+                SharedPreferencesUtil.saveQbUser(user);
+                QBData.curQBUser = user;
                 setResult(RESULT_OK, new Intent());
 
-//                Toaster.longToast("You was successfully sign in!");
+                mPrefs.setQuickBloxUsername(user.getLogin());
+                mPrefs.setQuickBloxUserPass(user.getPassword());
                 Intent intent= new Intent(SignUpActivity.this, MainActivity.class);
                 startActivity(intent);
                 finish();
@@ -370,7 +377,7 @@ public class SignUpActivity extends IBActivity implements View.OnClickListener {
         }
 
         myProgressDialog.show();
-        mAuth.createUserWithEmailAndPassword(email, password)
+        mAuth.createUserWithEmailAndPassword(email, Constant.FIREBASE_DEFAULT_PASS)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
@@ -389,15 +396,19 @@ public class SignUpActivity extends IBActivity implements View.OnClickListener {
         String username = m_txtId.getText().toString();
         String country = m_txtCountry.getText().toString();
         // Write new user
-        writeNewUser(user.getUid(), username, user.getEmail(), "Male", country);
+        writeNewUser(user.getUid(), username, user.getEmail(), Constant.FIREBASE_GENDER_MALE, country);
         // SignUp to Quickblox
         quickbloxSignUp();
     }
 
     // [START basic_write]
     private void writeNewUser(String userId, String name, String email, String gender, String country) {
-        User user = new User(name, email, gender, country, "Not Set");
-        mDatabase.child("users").child(userId).setValue(user);
+        FireUser user = new FireUser(name, email, gender, country, "Not Set");
+        Map<String, Object> userValues = user.toMap();
+        Map<String, Object> childUpdates = new HashMap<>();
+        childUpdates.put("/"+Constant.FIREBASE_USERS+"/" + userId, userValues);
+//        mDatabase.child(Constant.FIREBASE_USERS).child(userId).setValue(user);
+        mDatabase.updateChildren(childUpdates);
     }
     // [END basic_write]
 

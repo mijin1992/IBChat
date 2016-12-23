@@ -20,7 +20,7 @@ import com.brasco.simwechat.app.Constant;
 import com.brasco.simwechat.countrypicker.CountryPicker;
 import com.brasco.simwechat.countrypicker.CountryPickerListener;
 import com.brasco.simwechat.dialog.MyProgressDialog;
-import com.brasco.simwechat.model.User;
+import com.brasco.simwechat.model.FireUser;
 import com.brasco.simwechat.quickblox.QBConstants;
 import com.brasco.simwechat.quickblox.QBData;
 import com.brasco.simwechat.quickblox.core.utils.Toaster;
@@ -78,7 +78,7 @@ public class ProfileActivity extends IBActivity implements View.OnClickListener 
     private QBUser me;
     private DatabaseReference mUserReference;
     private String mFirebaseUserId;
-    private User mFirebaseUser;
+    private FireUser mFirebaseUser;
     private ValueEventListener mUsersListener;
     private MyProgressDialog myProgressDialog;
 
@@ -88,7 +88,7 @@ public class ProfileActivity extends IBActivity implements View.OnClickListener 
         setContentView(R.layout.activity_profile);
 
         mFirebaseUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        mUserReference = FirebaseDatabase.getInstance().getReference().child("users").child(mFirebaseUserId);
+        mUserReference = FirebaseDatabase.getInstance().getReference().child(Constant.FIREBASE_USERS).child(mFirebaseUserId);
 
         myProgressDialog = new MyProgressDialog(this, 0);
 
@@ -145,7 +145,6 @@ public class ProfileActivity extends IBActivity implements View.OnClickListener 
         super.onActivityResult(requestCode, resultCode, data);
         if( resultCode == Activity.RESULT_OK) {
             if (requestCode == Constant.REQ_PHOTO_FILE) {
-                LogUtil.writeDebugLog(TAG, "onActivityResult", "onActivityResult from CameraActivity");
                 String path = data.getStringExtra(Constant.EK_URL);
                 setAvatar(path);
                 File image = new File(path);
@@ -162,7 +161,7 @@ public class ProfileActivity extends IBActivity implements View.OnClickListener 
                     setUserName(strValue);
                 } else {
                     m_txtWhatsup.setText(strValue);
-                    writeUserInfo("comment", strValue);
+                    writeUserInfo(Constant.FIREBASE_COMMENT_FIELD, strValue);
                 }
             }
         }
@@ -230,14 +229,14 @@ public class ProfileActivity extends IBActivity implements View.OnClickListener 
             m_maleButton.setChecked(true);
             m_femaleButton.setChecked(false);
             m_genderType = Utils.Gender.MALE;
-            m_txtGender.setText("Male");
-            writeUserInfo("gender", "Male");
+            m_txtGender.setText(Constant.FIREBASE_GENDER_MALE);
+            writeUserInfo(Constant.FIREBASE_GENDER_FIELD, Constant.FIREBASE_GENDER_MALE);
         } else {
             m_maleButton.setChecked(false);
             m_femaleButton.setChecked(true);
             m_genderType = Utils.Gender.FEMALE;
-            m_txtGender.setText("Female");
-            writeUserInfo("gender", "Female");
+            m_txtGender.setText(Constant.FIREBASE_GENDER_FEMALE);
+            writeUserInfo(Constant.FIREBASE_GENDER_FIELD, Constant.FIREBASE_GENDER_FEMALE);
         }
         m_genderDialog.dismiss();
     }
@@ -287,7 +286,7 @@ public class ProfileActivity extends IBActivity implements View.OnClickListener 
         ValueEventListener postListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                User user = dataSnapshot.getValue(User.class);
+                FireUser user = dataSnapshot.getValue(FireUser.class);
                 m_txtGender.setText(user.getGender());
                 m_txtWhatsup.setText(user.getWhatsUp());
             }

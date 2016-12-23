@@ -23,7 +23,6 @@ import com.brasco.simwechat.app.Constant;
 import com.brasco.simwechat.countrypicker.Country;
 import com.brasco.simwechat.dialog.MyProgressDialog;
 import com.brasco.simwechat.model.DataHolder;
-import com.brasco.simwechat.model.User;
 import com.brasco.simwechat.utils.LogUtil;
 import com.brasco.simwechat.quickblox.QBData;
 import com.brasco.simwechat.quickblox.core.utils.SharedPrefsHelper;
@@ -133,11 +132,6 @@ public class LogInActivity extends IBActivity implements View.OnClickListener {
     @Override
     public void onStart() {
         super.onStart();
-
-        // Check auth on Activity start
-//        if (mAuth.getCurrentUser() != null) {
-//            onAuthSuccess(mAuth.getCurrentUser());
-//        }
     }
 
     @Override
@@ -333,6 +327,13 @@ public class LogInActivity extends IBActivity implements View.OnClickListener {
                         int count = result.size();
                         String username = mPrefs.getQuickBloxUsername();
                         String userpass = mPrefs.getQuickBloxUserPass();
+///////////////////////////////////// goto Login //////////////////////////////////////////////////
+                        if (username != null && !username.isEmpty()){
+                            m_txtUserId.setText(username);
+                            m_txtPassword.setText(userpass);
+                            signIn();
+                        }
+//////////////////////////////////////////////////////////////////////////////////////////////////
                     }
                     @Override
                     public void onError(QBResponseException e) {
@@ -357,7 +358,7 @@ public class LogInActivity extends IBActivity implements View.OnClickListener {
         progressDialog.show();
         String email = mQBUser.getEmail();
         String password = m_txtPassword.getText().toString();
-        mAuth.signInWithEmailAndPassword(email, password)
+        mAuth.signInWithEmailAndPassword(email, Constant.FIREBASE_DEFAULT_PASS)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
@@ -373,26 +374,8 @@ public class LogInActivity extends IBActivity implements View.OnClickListener {
                 });
     }
     private void onAuthSuccess(FirebaseUser user) {
-//        String username = usernameFromEmail(user.getEmail());
-//        writeNewUser(user.getUid(), username, user.getEmail());
-        // Go to MainActivity
-
         Intent intent= new Intent(LogInActivity.this, MainActivity.class);
         startActivity(intent);
         finish();
     }
-
-    private String usernameFromEmail(String email) {
-        if (email.contains("@")) {
-            return email.split("@")[0];
-        } else {
-            return email;
-        }
-    }
-    // [START basic_write]
-//    private void writeNewUser(String userId, String name, String email) {
-//        User user = new User(name, email);
-//        mDatabase.child("users").child(userId).setValue(user);
-//    }
-    // [END basic_write]
 }

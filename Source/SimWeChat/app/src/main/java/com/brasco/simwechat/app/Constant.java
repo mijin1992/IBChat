@@ -23,6 +23,14 @@ public class Constant {
 
     public static final String GCM_PROJECT_NUMBER = "192744644051";
 
+    public static final String FIREBASE_DEFAULT_PASS = "aru4JB5XzZARfAz";
+    public static final String FIREBASE_USERS = "users";
+    public static final String FIREBASE_POSTS = "posts";
+    public static final String FIREBASE_COMMENT_FIELD = "comment";
+    public static final String FIREBASE_GENDER_FIELD = "gender";
+    public static final String FIREBASE_GENDER_MALE = "Male";
+    public static final String FIREBASE_GENDER_FEMALE = "Female";
+
     public static final int REQ_IMAGE_FROM_CAMERA = 10001;
     public static final int REQ_IMAGE_FROM_GALLERY = 10002;
     public static final int REQ_IMAGE_FROM_GALLERY_CROP = 10003;

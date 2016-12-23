@@ -119,6 +119,24 @@
                 android:layout_height="60dp"
                 android:layout_gravity="center_vertical"
                 android:orientation="horizontal">
+                <ImageView
+                    android:id="@+id/image_post_1"
+                    android:layout_marginLeft="5dp"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    />
+                <ImageView
+                    android:id="@+id/image_post_2"
+                    android:layout_marginLeft="5dp"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    />
+                <ImageView
+                    android:id="@+id/image_post_3"
+                    android:layout_marginLeft="5dp"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    />
             </LinearLayout>
         </LinearLayout>
         <include layout="@layout/horiz_divider"/>
