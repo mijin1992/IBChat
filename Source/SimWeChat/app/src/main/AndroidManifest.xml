@@ -118,10 +118,14 @@
             android:name=".SelectVideoActivity"
             android:screenOrientation="portrait" />
         <activity android:name=".InputActivity" />
-        <activity android:name=".NewPostActivity"></activity>
+        <activity android:name=".NewPostActivity" />
+
         <service
             android:name=".firebase.MyUploadService"
             android:exported="false" />
+
+        <activity android:name=".PostUserActivity" />
+        <activity android:name=".ImageViewActivity"></activity>
     </application>
 
 </manifest>

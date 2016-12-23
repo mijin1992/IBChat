@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.brasco.simwechat.ImageViewActivity;
 import com.brasco.simwechat.PostActivity;
 import com.brasco.simwechat.R;
 import com.brasco.simwechat.model.FirePost;
@@ -63,7 +64,7 @@ public class PostArrayAdapter extends ArrayAdapter<FirePost> {
         String strDay = sdfDay.format(time);
         holder.m_txtMonth.setText(strMonth);
         holder.m_txtDay.setText(strDay);
-        String url = getItem(position).getImageUrl();
+        final String url = getItem(position).getImageUrl();
         Glide.with(mActivity)
                 .load(url)
                 .listener(new RequestListener<String, GlideDrawable>() {
@@ -75,6 +76,12 @@ public class PostArrayAdapter extends ArrayAdapter<FirePost> {
                     @Override
                     public boolean onResourceReady(GlideDrawable resource, String model,
                                                    Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                        holder.m_image.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                ImageViewActivity.startImageViewActivity(getContext(), url);
+                            }
+                        });
                         return false;
                     }
                 })

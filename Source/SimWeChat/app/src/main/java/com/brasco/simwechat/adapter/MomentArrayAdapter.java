@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.brasco.simwechat.ImageViewActivity;
 import com.brasco.simwechat.MomentActivity;
 import com.brasco.simwechat.PostActivity;
 import com.brasco.simwechat.R;
@@ -34,18 +35,18 @@ import java.util.List;
  */
 
 public class MomentArrayAdapter extends ArrayAdapter<FirePost> {
-private LayoutInflater mInflater;
-private MomentActivity mActivity;
+    private LayoutInflater mInflater;
+    private Context mActivity;
 
-static class Holder {
-    ImageView m_userImage;
-    ImageView m_momentImage;
-    TextView m_name;
-    TextView m_txtComment;
-    TextView m_txtTime;
-}
+    static class Holder {
+        ImageView m_userImage;
+        ImageView m_momentImage;
+        TextView m_name;
+        TextView m_txtComment;
+        TextView m_txtTime;
+    }
 
-    public MomentArrayAdapter(MomentActivity context, List<FirePost> posts) {
+    public MomentArrayAdapter(Context context, List<FirePost> posts) {
         super(context, R.layout.item_moment, posts);
         mInflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mActivity = context;
@@ -80,7 +81,7 @@ static class Holder {
             strTime = String.valueOf(days) + " days ago";
 
         holder.m_txtTime.setText(strTime);
-        String url = getItem(position).getImageUrl();
+        final String url = getItem(position).getImageUrl();
         Glide.with(mActivity)
                 .load(url)
                 .listener(new RequestListener<String, GlideDrawable>() {
@@ -92,6 +93,12 @@ static class Holder {
                     @Override
                     public boolean onResourceReady(GlideDrawable resource, String model,
                                                    Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                        holder.m_momentImage.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                ImageViewActivity.startImageViewActivity(getContext(), url);
+                            }
+                        });
                         return false;
                     }
                 })

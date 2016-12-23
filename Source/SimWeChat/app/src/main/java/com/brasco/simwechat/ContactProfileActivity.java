@@ -120,7 +120,9 @@ public class ContactProfileActivity extends BaseActivity implements View.OnClick
         m_postImage1 = (ImageView) findViewById(R.id.image_post_1);
         m_postImage2 = (ImageView) findViewById(R.id.image_post_2);
         m_postImage3 = (ImageView) findViewById(R.id.image_post_3);
-
+        m_postImage1.setOnClickListener(this);
+        m_postImage2.setOnClickListener(this);
+        m_postImage3.setOnClickListener(this);
         m_btnAlbum.setOnClickListener(this);
         m_btnMessage.setOnClickListener(this);
         m_btnCall.setOnClickListener(this);
@@ -170,6 +172,11 @@ public class ContactProfileActivity extends BaseActivity implements View.OnClick
                 break;
             case R.id.button_call:
                 freeCall();
+                break;
+            case R.id.image_post_1:
+            case R.id.image_post_2:
+            case R.id.image_post_3:
+                PostUserActivity.startPostUserActivity(this, m_curUser.getQBUser().getLogin());
                 break;
         }
     }
