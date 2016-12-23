@@ -103,6 +103,7 @@ static class Holder {
 
         QBUser qbUser = getQBUserFromUserId(getItem(position).getAuthorQbId());
         if (qbUser != null){
+            holder.m_name.setText(qbUser.getFullName());
             String strUrl= qbUser.getCustomData();
             if(strUrl != null && !strUrl.isEmpty()) {
                 Glide.with(mActivity)
