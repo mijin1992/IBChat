@@ -32,6 +32,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
+                android:imeOptions="actionDone"
                 android:background="@null"
                 android:hint="User ID"
                 android:maxLines="1"

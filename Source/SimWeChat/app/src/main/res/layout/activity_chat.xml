@@ -1,115 +1,119 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_chat"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/chatBackground"
     tools:context="com.brasco.simwechat.ChatActivity">
 
-    <ListView
-        android:id="@+id/list_chat_view"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:layout_above="@+id/divider"
-        android:scrollbars="vertical"/>
-    <LinearLayout
-        android:id="@+id/divider"
-        android:layout_width="match_parent"
-        android:layout_height="0.1dp"
-        android:layout_above="@+id/chat_input"
-        android:orientation="horizontal"
-        android:background="@color/textViewColor"/>
-    <RelativeLayout
-        android:id="@+id/chat_input"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingTop="4dp"
-        android:paddingBottom="4dp"
-        android:orientation="horizontal"
-        android:layout_alignParentBottom="true"
-        android:background="@color/inputBackground">
-        <ImageButton
-            android:id="@+id/button_record_audio"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginRight="10dp"
-            android:src="@drawable/ic_audio_btn"
-            android:background="@android:color/transparent"
-            android:scaleType="fitXY"
-            android:padding="0dp"
-            android:layout_weight="0"
-            android:layout_centerVertical="true"/>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:layout_centerVertical="true"
-            android:layout_toEndOf="@+id/button_record_audio"
-            android:layout_toLeftOf="@+id/button_emoji"
-            android:layout_toStartOf="@+id/button_emoji">
-            <EditText
-                android:id="@+id/txt_chat"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginBottom="4dp"
-                android:background="@null" />
-            <LinearLayout
-                android:id="@+id/txt_divider"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:orientation="horizontal"
-                android:background="@color/colorPrimary"/>
-        </LinearLayout>
-        <ImageButton
-            android:id="@+id/button_emoji"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="5dp"
-            android:src="@drawable/button_emoticon"
-            android:scaleType="fitXY"
-            android:padding="0dp"
-            android:background="@android:color/transparent"
-            android:layout_centerVertical="true"
-            android:layout_toLeftOf="@+id/button_send"
-            android:layout_toStartOf="@+id/button_send" />
-        <ImageButton
-            android:id="@+id/button_send"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="15dp"
-            android:src="@drawable/button_send"
-            android:scaleType="fitXY"
-            android:padding="0dp"
-            android:background="@android:color/transparent"
-            android:layout_centerVertical="true"
-            android:layout_alignParentRight="true"/>
-        <TextView
-            android:id="@+id/btn_to_talk"
+        android:orientation="vertical"
+        android:background="@color/chatBackground">
+
+        <ListView
+            android:id="@+id/list_chat_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="Hold to Talk"
-            android:textSize="18sp"
-            android:gravity="center"
-            android:layout_toRightOf="@+id/button_record_audio"
-            android:layout_toEndOf="@+id/button_record_audio"
-            android:layout_alignTop="@+id/button_send"
-            android:layout_alignBottom="@+id/button_send"
-            android:background="@drawable/bg_hold_to_talk"/>
-    </RelativeLayout>
-    <FrameLayout
-        android:id="@+id/emojicons"
-        android:layout_width="match_parent"
-        android:layout_height="250dp"
-        android:layout_below="@+id/chat_input"
-        android:orientation="horizontal"
-        android:visibility="gone"/>
-</RelativeLayout>
+            android:layout_weight="1"
+            android:scrollbars="vertical"/>
+        <LinearLayout
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="0.1dp"
+            android:orientation="horizontal"
+            android:background="@color/textViewColor"/>
+        <RelativeLayout
+            android:id="@+id/chat_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:orientation="horizontal"
+            android:background="@color/inputBackground">
+            <ImageButton
+                android:id="@+id/button_record_audio"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginRight="10dp"
+                android:src="@drawable/ic_audio_btn"
+                android:background="@android:color/transparent"
+                android:scaleType="fitXY"
+                android:padding="0dp"
+                android:layout_weight="0"
+                android:layout_centerVertical="true"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@+id/button_record_audio"
+                android:layout_toLeftOf="@+id/button_emoji"
+                android:layout_toStartOf="@+id/button_emoji">
+                <EditText
+                    android:id="@+id/txt_chat"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="4dp"
+                    android:background="@null" />
+                <LinearLayout
+                    android:id="@+id/txt_divider"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:orientation="horizontal"
+                    android:background="@color/colorPrimary"/>
+            </LinearLayout>
+            <ImageButton
+                android:id="@+id/button_emoji"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="5dp"
+                android:src="@drawable/button_emoticon"
+                android:scaleType="fitXY"
+                android:padding="0dp"
+                android:background="@android:color/transparent"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/button_send"
+                android:layout_toStartOf="@+id/button_send" />
+            <ImageButton
+                android:id="@+id/button_send"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="15dp"
+                android:src="@drawable/button_send"
+                android:scaleType="fitXY"
+                android:padding="0dp"
+                android:background="@android:color/transparent"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"/>
+            <TextView
+                android:id="@+id/btn_to_talk"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Hold to Talk"
+                android:textSize="18sp"
+                android:gravity="center"
+                android:layout_toRightOf="@+id/button_record_audio"
+                android:layout_toEndOf="@+id/button_record_audio"
+                android:layout_alignTop="@+id/button_send"
+                android:layout_alignBottom="@+id/button_send"
+                android:background="@drawable/bg_hold_to_talk"/>
+        </RelativeLayout>
+        <FrameLayout
+            android:id="@+id/emojicons"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:orientation="horizontal"
+            android:visibility="gone"/>
+    </LinearLayout>
+
+</LinearLayout>
