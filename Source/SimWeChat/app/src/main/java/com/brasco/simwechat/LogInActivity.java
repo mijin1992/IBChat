@@ -125,8 +125,8 @@ public class LogInActivity extends IBActivity implements View.OnClickListener {
             m_txtPassword.setText(savedPassword);
         }
         progressDialog = new MyProgressDialog(this, 0);
-        progressDialog.show();
-        createSession();
+//        progressDialog.show();
+//        createSession();
     }
 
     @Override
@@ -300,57 +300,57 @@ public class LogInActivity extends IBActivity implements View.OnClickListener {
         sharedPrefsHelper.saveQbUser(qbUser);
     }
 
-    private void createSession() {
-        LogUtil.writeDebugLog(TAG, "createSession", "1");
-        QBChatService chatService = QBChatService.getInstance();
-        chatService.setDebugEnabled(true);
-
-        QBChatService.ConfigurationBuilder chatserviceConfigurationBuilder = new QBChatService.ConfigurationBuilder();
-        chatserviceConfigurationBuilder.setSocketTimeout(10000);
-        QBChatService.setConfigurationBuilder(chatserviceConfigurationBuilder);
-
-        QBAuth.createSession().performAsync(new QBEntityCallback<QBSession>() {
-            @Override
-            public void onSuccess(QBSession result, Bundle params) {
-                LogUtil.writeDebugLog(TAG, "createSession", "onSuccess");
-                List<String> tags = new ArrayList<>();
-                tags.add(Constant.QB_USERS_TAG);
-                QBUsers.getUsers(null).performAsync(new QBEntityCallback<ArrayList<QBUser>>() {
-                    @Override
-                    public void onSuccess(ArrayList<QBUser> result, Bundle params) {
-                        progressDialog.hide();
-                        LogUtil.writeDebugLog(TAG, "createSession", "getUsers_onSuccess");
-                        for (int i=0; i< result.size();i ++){
-                            LogUtil.writeDebugLog(TAG, "createSession", "getUsers_onSuccess: username : " + result.get(i).getLogin());
-                        }
-                        QBData.qbUsers = result;
-                        int count = result.size();
-                        String username = mPrefs.getQuickBloxUsername();
-                        String userpass = mPrefs.getQuickBloxUserPass();
-///////////////////////////////////// goto Login //////////////////////////////////////////////////
-                        if (username != null && !username.isEmpty()){
-                            m_txtUserId.setText(username);
-                            m_txtPassword.setText(userpass);
-                            signIn();
-                        }
-//////////////////////////////////////////////////////////////////////////////////////////////////
-                    }
-                    @Override
-                    public void onError(QBResponseException e) {
-                        progressDialog.hide();
-                        LogUtil.writeDebugLog(TAG, "createSession", "getUsers_onError");
-                        Toaster.longToast("Loading users error!");
-                    }
-                });
-            }
-            @Override
-            public void onError(QBResponseException e) {
-                progressDialog.hide();
-                LogUtil.writeDebugLog(TAG, "createSession", "onError");
-                Toaster.longToast("Creat Session error!");
-            }
-        });
-    }
+//    private void createSession() {
+//        LogUtil.writeDebugLog(TAG, "createSession", "1");
+//        QBChatService chatService = QBChatService.getInstance();
+//        chatService.setDebugEnabled(true);
+//
+//        QBChatService.ConfigurationBuilder chatserviceConfigurationBuilder = new QBChatService.ConfigurationBuilder();
+//        chatserviceConfigurationBuilder.setSocketTimeout(10000);
+//        QBChatService.setConfigurationBuilder(chatserviceConfigurationBuilder);
+//
+//        QBAuth.createSession().performAsync(new QBEntityCallback<QBSession>() {
+//            @Override
+//            public void onSuccess(QBSession result, Bundle params) {
+//                LogUtil.writeDebugLog(TAG, "createSession", "onSuccess");
+//                List<String> tags = new ArrayList<>();
+//                tags.add(Constant.QB_USERS_TAG);
+//                QBUsers.getUsers(null).performAsync(new QBEntityCallback<ArrayList<QBUser>>() {
+//                    @Override
+//                    public void onSuccess(ArrayList<QBUser> result, Bundle params) {
+//                        progressDialog.hide();
+//                        LogUtil.writeDebugLog(TAG, "createSession", "getUsers_onSuccess");
+//                        for (int i=0; i< result.size();i ++){
+//                            LogUtil.writeDebugLog(TAG, "createSession", "getUsers_onSuccess: username : " + result.get(i).getLogin());
+//                        }
+//                        QBData.qbUsers = result;
+//                        int count = result.size();
+//                        String username = mPrefs.getQuickBloxUsername();
+//                        String userpass = mPrefs.getQuickBloxUserPass();
+/////////////////////////////////////// goto Login //////////////////////////////////////////////////
+//                        if (username != null && !username.isEmpty()){
+//                            m_txtUserId.setText(username);
+//                            m_txtPassword.setText(userpass);
+//                            signIn();
+//                        }
+////////////////////////////////////////////////////////////////////////////////////////////////////
+//                    }
+//                    @Override
+//                    public void onError(QBResponseException e) {
+//                        progressDialog.hide();
+//                        LogUtil.writeDebugLog(TAG, "createSession", "getUsers_onError");
+//                        Toaster.longToast("Loading users error!");
+//                    }
+//                });
+//            }
+//            @Override
+//            public void onError(QBResponseException e) {
+//                progressDialog.hide();
+//                LogUtil.writeDebugLog(TAG, "createSession", "onError");
+//                Toaster.longToast("Creat Session error!");
+//            }
+//        });
+//    }
 
     private void firebaseSignIn() {
         Log.d(TAG, "signIn");

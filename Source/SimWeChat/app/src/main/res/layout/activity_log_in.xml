@@ -83,7 +83,8 @@
             android:text="Forgot password"
             android:textColor="@color/buttonTextColor2"
             android:textAllCaps="false"
-            android:background="@android:color/transparent"/>
+            android:background="@android:color/transparent"
+            android:visibility="invisible"/>
     </LinearLayout>
     <Button
         android:id="@+id/btn_sign_up"

@@ -283,47 +283,64 @@ public class SignUpActivity extends IBActivity implements View.OnClickListener {
     }
 
     private void setAvatar(){
-        LogUtil.writeDebugLog(TAG, "setAvatar", "start");
-        File file  = new File(mLogoImagePath);
-        QBContent.uploadFileTask(file, true, null, null).performAsync(new QbEntityCallbackTwoTypeWrapper<QBFile, QBAttachment>(null)
-        {
-            @Override
-            public void onSuccess(QBFile qbFile, Bundle bundle) {
-                LogUtil.writeDebugLog(TAG, "setAvatar", "onSuccess");
-                String login = m_txtId.getText().toString().trim();
-                String password = m_txtPassword.getText().toString();
-                String name = m_txtFullName.getText().toString();
-                String phoneNumber = m_txtMobileNumber.getText().toString();
-                QBUser user = new QBUser();
-                user.setLogin(login);
-                Integer id = mQBUser.getId();
-                user.setId(id);
-                user.setFullName(name);
-                Integer uploadedFileID = qbFile.getId();
-                String pubUri = qbFile.getPublicUrl();
-                user.setFileId(uploadedFileID);
-                user.setCustomData(pubUri);
-                QBUsers.updateUser(user).performAsync(new QBEntityCallback<QBUser>() {
-                    @Override
-                    public void onSuccess(QBUser qbUser, Bundle bundle) {
-                        LogUtil.writeDebugLog(TAG, "setAvatar", "onSuccess_1");
-                        qbUser.setPassword(m_txtPassword.getText().toString().trim());
-                        QBUserSignIn(qbUser);
-                    }
-                    @Override
-                    public void onError(QBResponseException e) {
-                        LogUtil.writeDebugLog(TAG, "setAvatar", "onError_1");
-                        Toaster.longToast(e.getErrors().get(0));
-                        myProgressDialog.hide();
-                    }
-                });
-            }
-            @Override
-            public void onError(QBResponseException e) {
-                Toaster.longToast(e.getErrors().get(0));
-                myProgressDialog.hide();
-            }
-        });
+        if (mLogoImagePath != null && !mLogoImagePath.isEmpty()) {
+            LogUtil.writeDebugLog(TAG, "setAvatar", "start");
+            File file = new File(mLogoImagePath);
+            QBContent.uploadFileTask(file, true, null, null).performAsync(new QbEntityCallbackTwoTypeWrapper<QBFile, QBAttachment>(null) {
+                @Override
+                public void onSuccess(QBFile qbFile, Bundle bundle) {
+                    LogUtil.writeDebugLog(TAG, "setAvatar", "onSuccess");
+                    String login = m_txtId.getText().toString().trim();
+                    String password = m_txtPassword.getText().toString();
+                    String name = m_txtFullName.getText().toString();
+                    String phoneNumber = m_txtMobileNumber.getText().toString();
+                    QBUser user = new QBUser();
+                    user.setLogin(login);
+                    Integer id = mQBUser.getId();
+                    user.setId(id);
+                    user.setFullName(name);
+                    Integer uploadedFileID = qbFile.getId();
+                    String pubUri = qbFile.getPublicUrl();
+                    user.setFileId(uploadedFileID);
+                    user.setCustomData(pubUri);
+                    QBUsers.updateUser(user).performAsync(new QBEntityCallback<QBUser>() {
+                        @Override
+                        public void onSuccess(QBUser qbUser, Bundle bundle) {
+                            LogUtil.writeDebugLog(TAG, "setAvatar", "onSuccess_1");
+                            qbUser.setPassword(m_txtPassword.getText().toString().trim());
+                            QBUserSignIn(qbUser);
+                        }
+
+                        @Override
+                        public void onError(QBResponseException e) {
+                            LogUtil.writeDebugLog(TAG, "setAvatar", "onError_1");
+                            Toaster.longToast(e.getErrors().get(0));
+                            myProgressDialog.hide();
+                        }
+                    });
+                }
+
+                @Override
+                public void onError(QBResponseException e) {
+                    Toaster.longToast(e.getErrors().get(0));
+                    myProgressDialog.hide();
+                }
+            });
+        } else {
+            String login = m_txtId.getText().toString().trim();
+            String password = m_txtPassword.getText().toString();
+            String name = m_txtFullName.getText().toString();
+            String phoneNumber = m_txtMobileNumber.getText().toString();
+            QBUser qbUser = new QBUser();
+            qbUser.setLogin(login);
+            Integer id = mQBUser.getId();
+            qbUser.setId(id);
+            qbUser.setFullName(name);
+            qbUser.setPhone(phoneNumber);
+
+            qbUser.setPassword(password);
+            QBUserSignIn(qbUser);
+        }
     }
     private boolean isValidData(String login, String password, String name, String phonenumber, String email) {
         if (TextUtils.isEmpty(login) || TextUtils.isEmpty(password) || TextUtils.isEmpty(name)
@@ -345,10 +362,10 @@ public class SignUpActivity extends IBActivity implements View.OnClickListener {
             }
             return false;
         }
-        if (mLogoImagePath.isEmpty()){
-            Toaster.shortToast("Please set logo image.");
-            return false;
-        }
+//        if (mLogoImagePath.isEmpty()){
+//            Toaster.shortToast("Please set logo image.");
+//            return false;
+//        }
         return true;
     }
 
