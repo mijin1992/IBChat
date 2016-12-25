@@ -43,7 +43,6 @@ dependencies {
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
     compile 'com.github.siyamed:android-shape-imageview:0.9.3'
     compile 'com.github.orangegangsters:swipy:1.2.2@aar'
-    compile 'com.github.bumptech.glide:glide:3.6.1'
     compile 'se.emilsjolander:stickylistheaders:2.7.0'
     compile 'com.quickblox:quickblox-android-sdk-videochat-webrtc:3.1.0'
     compile 'com.android.support:recyclerview-v7:25.0.1'

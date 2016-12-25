@@ -39,6 +39,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
 
     LinearLayout m_btnProfile = null;
     LinearLayout m_btnPost = null;
+    LinearLayout m_btnLogOut = null;
     private ImageView m_userImage;
     private TextView m_userName;
     private TextView m_userId;
@@ -75,6 +76,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         m_btnProfile.setOnClickListener(this);
         m_btnPost = (LinearLayout) v.findViewById(R.id.button_post);
         m_btnPost.setOnClickListener(this);
+        m_btnLogOut = (LinearLayout) v.findViewById(R.id.button_logout);
+        m_btnLogOut.setOnClickListener(this);
         m_userImage = (ImageView) v.findViewById(R.id.profile_image);
         m_userName = (TextView) v.findViewById(R.id.profile_name);
         m_userId = (TextView) v.findViewById(R.id.txt_id);
@@ -97,6 +100,10 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
             case R.id.button_post:
                 Intent intent2 = new Intent(getContext(), PostActivity.class);
                 startActivity(intent2);
+                break;
+            case R.id.button_logout:
+                Intent intent3 = new Intent(getContext(), LogInActivity.class);
+                startActivity(intent3);
                 break;
         }
     }
