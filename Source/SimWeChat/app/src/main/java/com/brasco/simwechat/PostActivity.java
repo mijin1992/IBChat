@@ -147,7 +147,7 @@ public class PostActivity extends IBActivity {
                 String qbId = d6.getValue(String.class);
                 if (auId.equals(mFirebaseUserId)) {
                     FirePost post = new FirePost(auId, auName, time, comment, url, qbId);
-                    m_postArray.add(post);
+                    m_postArray.add(0, post);
 //                m_postArrayAdapter.add(post);
                     m_postArrayAdapter.notifyDataSetChanged();
                 }

@@ -129,7 +129,9 @@
             android:exported="false" />
 
         <activity android:name=".PostUserActivity" />
-        <activity android:name=".ImageViewActivity" />
+        <activity
+            android:name=".ImageViewActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 
 </manifest>

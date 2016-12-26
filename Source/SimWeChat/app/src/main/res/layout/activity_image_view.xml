@@ -4,7 +4,8 @@
     android:id="@+id/activity_image_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.brasco.simwechat.ImageViewActivity">
+    tools:context="com.brasco.simwechat.ImageViewActivity"
+    android:background="@color/black">
     <ImageView
         android:id="@+id/image_view"
         android:layout_width="match_parent"

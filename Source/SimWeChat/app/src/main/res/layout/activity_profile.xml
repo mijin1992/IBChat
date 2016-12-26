@@ -38,7 +38,7 @@
                 android:id="@+id/img_profile"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:src="@drawable/my_avatar"/>
+                android:scaleType="centerCrop"/>
         </LinearLayout>
         <include layout="@layout/horiz_divider"/>
         <LinearLayout

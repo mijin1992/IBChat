@@ -142,7 +142,7 @@ public class MomentActivity extends IBActivity {
                 String qbId = d6.getValue(String.class);
 
                 FirePost post = new FirePost(auId, auName, time, comment, url, qbId);
-                m_momentArray.add(post);
+                m_momentArray.add(0, post);
                 m_momentArrayAdapter.notifyDataSetChanged();
             }
             @Override
