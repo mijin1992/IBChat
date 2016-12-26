@@ -96,7 +96,7 @@ public class AudioConversationFragment extends BaseConversationFragment implemen
         otherOpponentsTextView.setText(getOtherOpponentsNames());
 
         audioSwitchToggleButton = (ToggleButton) view.findViewById(R.id.toggle_speaker);
-        audioSwitchToggleButton.setVisibility(View.INVISIBLE);
+//        audioSwitchToggleButton.setVisibility(View.VISIBLE);
 
         actionButtonsEnabled(false);
 

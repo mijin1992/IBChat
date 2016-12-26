@@ -1,6 +1,7 @@
 package com.brasco.simwechat.quickblox.utils;
 
 import android.content.Context;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -57,6 +58,12 @@ public class RingtonePlayer {
             LogUtil.writeDebugLog(TAG, "play", "mediaPlayer isn't created");
             return;
         }
+        AudioManager am =
+                (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+        am.setStreamVolume(
+                AudioManager.STREAM_MUSIC, am.getStreamMaxVolume(AudioManager.STREAM_MUSIC), 0);
+
+        //mediaPlayer.setVolume(100, 100);
         mediaPlayer.setLooping(looping);
         mediaPlayer.start();
     }
