@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.PersistableBundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.ListViewCompat;
@@ -141,14 +142,23 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener
                     }
                 } else if (event.getAction() == android.view.MotionEvent.ACTION_UP) {
                     m_btnToTalk.setBackgroundResource(R.drawable.bg_hold_to_talk_default);
-                    try {
-                        m_audioRecorder.stop();
-                        File audioMessage = new File(m_audioRecorder.getOutfilePath());
-                        attachmentPreviewAdapter.add(audioMessage);
-                        progressDialog.show();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                        if (m_audioRecorder != null) {
+                            LogUtil.writeDebugLog(TAG, "gotoVerificationActivity", "1");
+                            final Handler handler = new Handler();
+                            handler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        m_audioRecorder.stop();
+                                        File audioMessage = new File(m_audioRecorder.getOutfilePath());
+                                        attachmentPreviewAdapter.add(audioMessage);
+                                        progressDialog.show();
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }, 500);
+                        }
                 }
                 return true;
             }

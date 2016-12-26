@@ -238,6 +238,7 @@ public class CallActivity extends BaseActivity implements QBRTCClientSessionCall
             Log.d(TAG, "AppRTCAudioManager.AudioDevice.SPEAKER_PHONE");
         } else {
             audioManager.setDefaultAudioDevice(AppRTCAudioManager.AudioDevice.EARPIECE);
+//            audioManager.setDefaultAudioDevice(AppRTCAudioManager.AudioDevice.SPEAKER_PHONE);
             previousDeviceEarPiece = true;
             Log.d(TAG, "AppRTCAudioManager.AudioDevice.EARPIECE");
         }

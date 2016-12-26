@@ -79,7 +79,7 @@ public class SplashActivity extends AppCompatActivity {
         chatService.setDebugEnabled(true);
 
         QBChatService.ConfigurationBuilder chatserviceConfigurationBuilder = new QBChatService.ConfigurationBuilder();
-        chatserviceConfigurationBuilder.setSocketTimeout(10000);
+        chatserviceConfigurationBuilder.setSocketTimeout(100000);
         QBChatService.setConfigurationBuilder(chatserviceConfigurationBuilder);
 
         QBAuth.createSession().performAsync(new QBEntityCallback<QBSession>() {
@@ -113,7 +113,7 @@ public class SplashActivity extends AppCompatActivity {
             @Override
             public void onError(QBResponseException e) {
                 progressDialog.hide();
-                Toaster.longToast("Creat Session error!");
+                Toaster.longToast(e.getErrors().get(0));
             }
         });
     }

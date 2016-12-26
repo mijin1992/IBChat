@@ -97,7 +97,7 @@ public class IncomeCallFragment extends Fragment implements Serializable, View.O
             initButtonsListener();
         }
 
-        ringtonePlayer = new RingtonePlayer(getActivity());
+        ringtonePlayer = new RingtonePlayer(getActivity(), R.raw.beep);//RingtonePlayer(getActivity());
         return view;
     }
 
@@ -191,7 +191,7 @@ public class IncomeCallFragment extends Fragment implements Serializable, View.O
     public void startCallNotification() {
         Log.d(TAG, "startCallNotification()");
 
-        ringtonePlayer.play(false);
+        ringtonePlayer.play(true);
 
         vibrator = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
 

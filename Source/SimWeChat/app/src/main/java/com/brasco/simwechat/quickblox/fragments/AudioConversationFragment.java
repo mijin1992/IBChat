@@ -96,7 +96,7 @@ public class AudioConversationFragment extends BaseConversationFragment implemen
         otherOpponentsTextView.setText(getOtherOpponentsNames());
 
         audioSwitchToggleButton = (ToggleButton) view.findViewById(R.id.toggle_speaker);
-        audioSwitchToggleButton.setVisibility(View.VISIBLE);
+        audioSwitchToggleButton.setVisibility(View.INVISIBLE);
 
         actionButtonsEnabled(false);
 
@@ -130,6 +130,8 @@ public class AudioConversationFragment extends BaseConversationFragment implemen
             }
             firstOpponentNameTextView.setText(user.getFullName());
             otherOpponentsTextView.setText(user.getFullName());
+
+            conversationFragmentCallbackListener.onSwitchAudio();
         }
     }
 
